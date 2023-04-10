@@ -1,0 +1,94 @@
+{% extends 'wireguard/base.html' %}
+{% load static %}
+
+{% block title %}Wireguard Web servers list{% endblock %}
+
+{% block navigation %}
+    {% with nav="servers" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if server %}
+    <h2>Server {{ server.name }}</h2>
+
+    <ul>
+        <li>VPN Endpoint: <code>{{ server.hostname }}:{{ server.port }}</code></li>
+        {% if server.keepalive > 0 %}
+        <li>This server enforces a keepalive of {{ server.keepalive }} seconds</li>
+        {% endif %}
+        {% if server.has_dns > 0 %}
+        <li>This server has an internal DNS service to resolve VPN internal names</li>
+        {% endif %}
+        {% if server.is_exitnode > 0 %}
+        <li>This server bridges to internal Networks:
+            <ul>
+                {% for net in server.networks.all %}
+                    {% if server.clients_may_communicate or not net.is_client_network %}
+                        <li><code>{{ net.ip }}/{{ net.cidr_mask }}</code></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </li>
+        {% endif %}
+        {% if server.clients_may_communicate %}
+        <li>Clients can communicate with each other</li>
+        {% endif %}
+        {% if server.may_route_all_traffic %}
+        <li>Clients may access the Internet through this server</li>
+        {% else %}
+        <li>Clients <strong>CANNOT</strong> access the Internet through this server</li>
+        {% endif %}
+    </ul>
+
+    <h2>Your devices on this server <span class="headerlink"><a href="{% url 'client-new' %}?server={{ server.id }}"><span class="material-icons">note_add</span>Create a new device</a></span></h2>
+
+    <div class="pure-g">
+        <table class="pure-table pure-table-striped pure-u-1 table-stretch">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Keepalive</th>
+                    <th>Use DNS</th>
+                    {% if server.may_route_all_traffic %}
+                        <th>All Traffic</th>
+                    {% endif %}
+                    <th>Is Bridge</th>
+                    <th>Handshake</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if clients.count == 0 %}
+                <td colspan="6">No devices yet!</td>
+                {% else %}
+                    {% for client in clients %}
+                    <tr>
+                        <td><a href="{% url 'client-detail' client.id %}">{{ client.name }}</a></td>
+                        <td>{{ client.keepalive}} s</td>
+                        <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% if server.may_route_all_traffic %}
+                            <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% endif %}
+                        <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                        <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a></td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% endblock %}

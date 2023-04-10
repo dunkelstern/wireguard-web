@@ -1,0 +1,42 @@
+{% extends 'wireguard/base.html' %}
+
+{% block title %}Wireguard Web login{% endblock %}
+
+{% block navigation %}
+    {% with nav="login" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<p>Welcome to Wireguard Web, your self-service VPN.</p>
+<p>Please log in below:</p>
+
+<form class="pure-form pure-form-aligned" action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+        {% if messages %}
+        <div class="pure-controls">
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <div class="pure-control-group">
+            <label for="aligned-name">E-Mail</label>
+            <input type="text" name="username" id="aligned-name" placeholder="Username" {% if username %}value="{{ username }}"{% endif%} />
+        </div>
+        <div class="pure-control-group">
+            <label for="aligned-password">Password</label>
+            <input type="password" name="password" id="aligned-password" placeholder="Password" />
+        </div>
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Login</button>
+            <span class="small"><a href="{% url 'reset-password' %}">Forgot password?</a></span>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

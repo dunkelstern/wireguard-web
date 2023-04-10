@@ -1,0 +1,58 @@
+{% extends 'wireguard/base.html' %}
+{% load static %}
+
+{% block title %}Wireguard Web client list{% endblock %}
+
+{% block navigation %}
+    {% with nav="devices" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<h2>Devices <span class="headerlink"><a href="{% url 'client-new' %}"><span class="material-icons">note_add</span>Create a new device</a></span></h2>
+
+<div class="pure-g">
+    <table class="pure-table pure-table-striped pure-u-1 table-stretch">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Server</th>
+                <th>Keepalive</th>
+                <th>DNS</th>
+                <th>Internet</th>
+                <th>Bridge</th>
+                <th>Handshake</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if clients.count == 0 %}
+                <td colspan="7">No devices yet!</td>
+            {% else %}
+                {% for client in clients %}
+                <tr>
+                    <td><a href="{% url 'client-detail' client.id %}">{{ client.name }}</a></td>
+                    <td><a href="{% url 'server-detail' client.server.id %}">{{ client.server.name }}</a></td>        
+                    <td>{{ client.keepalive}} s</td>
+                    <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                    <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                    <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                    <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                    <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a><a href="{% url 'client-delete' client.id %}"><span class="material-icons">delete</span></a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+Hi {{ user.name }}!
+
+You just sent yourself the configuration file for your device {{ device.name }}
+from {{ server }}.
+
+Here's a link to the device again: {{ link }}
+
+You'll find the configuration in the attachment alongside a QR-Code you can
+scan for the mobile applications.
+
+Have fun,
+
+Admin

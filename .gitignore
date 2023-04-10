@@ -1,0 +1,7 @@
+.venv
+.env
+dist/
+__pycache__
+*.pyo
+db.sqlite
+/static

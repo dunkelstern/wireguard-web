@@ -1,0 +1,49 @@
+{% extends 'wireguard/base.html' %}
+{% load static %}
+
+{% block title %}Wireguard Web servers list{% endblock %}
+
+{% block navigation %}
+    {% with nav="servers" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<h2>Servers</h2>
+
+<div class="pure-g">
+    <table class="pure-table pure-table-striped pure-u-1 table-stretch">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Hostname</th>
+                <th>DNS</th>
+                <th>Exitnode</th>
+                <th>Communication</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for server in servers %}
+            <tr>
+                <td><a href="{% url 'server-detail' server.id %}">{{ server.name }}</a></td>
+                <td>{{ server.hostname}}:{{ server.port }}</td>
+                <td>{% if server.has_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                <td>{% if server.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                <td>{% if server.clients_may_communicate %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                <td><a href="{% url 'server-detail' server.id %}"><span class="material-icons">description</span></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

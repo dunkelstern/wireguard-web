@@ -1,0 +1,14 @@
+{% extends 'wireguard/base.html' %}
+
+{% block title %}Wireguard Web logged out{% endblock %}
+
+{% block navigation %}
+    {% with nav="logout" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+<h2>Logged out</h2>
+<p>You have been successfully logged out, good day!</p>
+{% endblock %}

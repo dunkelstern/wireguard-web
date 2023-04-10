@@ -1,0 +1,13 @@
+Hi {{ name }},
+
+Welcome at the {{ server }} VPN self-service portal. To activate your account
+please reset your password by using the following link:
+
+{{ link | safe }}
+
+If you did not request an account at {{ server }}, please ignore this mail, any
+information saved about this request will be deleted in 30 days.
+
+Sincerely,
+
+Admin

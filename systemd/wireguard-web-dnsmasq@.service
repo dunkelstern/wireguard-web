@@ -1,0 +1,21 @@
+[Unit]
+Description=Lightweight caching DNS server for wireguard-web interface %I
+Documentation=man:dnsmasq(8)
+Requires=wireguard-web-wg-quick@%i.service
+After=network.target
+After=wireguard-web-wg-quick@%i.service
+Before=network-online.target nss-lookup.target
+Wants=nss-lookup.target
+
+[Service]
+Type=dbus
+BusName=uk.org.thekelleys.dnsmasq
+ExecStartPre=/usr/bin/dnsmasq -C /etc/wireguard-web/dnsmasq-%i.conf --test
+ExecStart=/usr/bin/dnsmasq -C /etc/wireguard-web/dnsmasq-%i.conf -k --enable-dbus --user=dnsmasq --pid-file=/var/run/dnsmasq-%i.pid
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+PrivateDevices=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

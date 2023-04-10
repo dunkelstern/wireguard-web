@@ -1,0 +1,9 @@
+[Unit]
+Description="Monitor the wireguard-web configuration for changes and update system config"
+
+[Path]
+PathModified={config}
+Unit=wireguard-web-config.service
+
+[Install]
+WantedBy=multi-user.target

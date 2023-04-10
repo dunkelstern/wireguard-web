@@ -1,0 +1,46 @@
+{% extends 'wireguard/base.html' %}
+
+{% block title %}Wireguard Web register{% endblock %}
+
+{% block navigation %}
+    {% with nav="register" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+<h2>Register new Account</h2>
+<p>If your e-mail domain is on the following list you may register a new account:</p>
+<ul>
+{% for reg in self_registrations %}
+    <li>{{ reg }}</li>
+{% endfor %}
+</ul>
+<p>If this is the case please enter your e-mail address to receive login instructions.</p>
+
+<form class="pure-form pure-form-aligned" action="{% url 'register' %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+        {% if messages %}
+        <div class="pure-controls">
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <div class="pure-control-group">
+            <label for="aligned-name">Name</label>
+            <input type="text" name="name" id="aligned-name" placeholder="Name" {% if name %}value="{{ name }}"{% endif%} />
+        </div>
+        <div class="pure-control-group">
+            <label for="aligned-username">E-Mail</label>
+            <input type="text" name="username" id="aligned-username" placeholder="e-Mail" {% if username %}value="{{ username }}"{% endif%} />
+        </div>
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Request Access</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

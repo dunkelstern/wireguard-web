@@ -1,0 +1,53 @@
+[build-system]
+requires = ["flit_core >=3.7,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "wireguard-web"
+description = "Webinterface to configure a wireguard server"
+readme = "README.md"
+keywords = ["django", "wireguard"]
+license = {text = "MIT"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: Linux",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+requires-python = ">=3.10"
+dependencies = [
+    "Django>=4.1",
+    "qrcode>=7.4",
+    "Pillow>=9.5",
+    "whitenoise>=6.4"
+]
+authors = [{name = "Johannes Schriewer", email = "hallo@dunkelstern.de"}]
+
+[project.urls]
+Home = "https://github.com/dunkelstern/wireguard-web"
+
+
+# define the module to package since it is named differently
+[tool.flit.module]
+name = "wireguard-web"
+
+#[tool.flit.sdist]
+#include = ["doc/"]
+#exclude = ["doc/*.html"]
+
+#[tool.flit.external-data]
+#directory = "data"
+
+[tool.black]
+target-version = ['py310']
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+known_first_party = "wireguard-web"
+lines_after_imports = 2

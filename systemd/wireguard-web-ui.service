@@ -1,0 +1,16 @@
+[Unit]
+Description=Django service to configure the wireguard VPN
+After=network.target
+
+[Service]
+Type=exec
+EnvironmentFile=/home/user/wireguard-web/.env
+WorkingDirectory=/home/user/wireguard-web
+ExecStartPre=/home/user/.virtualenvs/wireguard-web/bin/python manage.py migrate
+ExecStart=/home/user/.virtualenvs/wireguard-web/bin/gunicorn -b 0.0.0.0:8000 --workers 2 wireguard_web.wsgi:application
+Restart=on-failure
+User=user
+Group=user
+
+[Install]
+WantedBy=multi-user.target

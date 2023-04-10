@@ -1,0 +1,73 @@
+.content {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 4em;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 768px;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    color: #777777;
+}
+
+.content p {
+    font-size: 1.125em;
+    line-height: 1.6;
+}
+
+ul li {
+    line-height: 1.6;
+}
+
+.content .small {
+    font-size: 0.875em;
+}
+
+.headerlink {
+    font-weight: normal;
+    font-size: 0.625em;
+}
+
+.content h1, h2, h3, h4, h5, h6 {
+    color: #4b4b4b;
+}
+
+.header {
+    background-color: #e0e0de;
+}
+
+body {
+    background-color: #fafaf8;
+}
+
+ul.messages {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+
+.messages .error {
+    color: #a00000;
+}
+
+.messages .success {
+    color: #00a000;
+}
+
+.pure-button {
+    margin-right: 1em;
+}
+
+.button {
+    color: #777777;
+    text-decoration: none;
+}
+
+.table-stretch {
+    display: table;
+}
+
+.danger-button {
+    background-color: #a00000;
+    color: #ffffff;
+}

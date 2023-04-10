@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o allexport
+source .env
+set +o allexport
+
+if [ $(id -u) -gt 0 ] ; then
+    echo "Please run this script as root or via sudo"
+    exit 1
+fi
+
+mkdir -p /etc/wireguard-web
+path=$(pwd)
+
+for file in wireguard-web-config.path wireguard-web-config.service wireguard-web-dnsmasq@.service wireguard-web-wg-quick@.service ; do
+    tempfile=$(mktemp /tmp/service.XXXXXXXX)
+    sed -e "s@{path}@${path}@" -e "s@{config}@${WIREGUARD_STAGING_CONFIG_DIRECTORY}@" systemd/$file >$tempfile
+    install -o root -g root -m 0640 $tempfile /etc/systemd/system/$file
+    rm $tempfile
+done
+
+systemctl daemon-reload
+systemctl enable --now wireguard-web-config.path

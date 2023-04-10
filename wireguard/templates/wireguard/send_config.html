@@ -1,0 +1,38 @@
+{% extends 'wireguard/base.html' %}
+{% load static %}
+
+{% block title %}Wireguard Web send config{% endblock %}
+
+{% block navigation %}
+    {% with nav="devices" %}
+        {% include 'wireguard/nav.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if client %}
+    <h2>Send configuration {{ client.name }}@{{ client.server.name }}?</h2>
+
+    <p>Are you sure you want to send the configuration to your mail address {{ request.user.email }}?</p>
+    
+    <form class="pure-form pure-form-aligned" action="{% url 'client-send-config' client.id %}" method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Yes, send config</button>
+                <a href="{% url 'client-list' %}">No, go back to device list</a>
+            </div>
+        </fieldset>
+    </form>    
+{% endif %}
+
+{% endblock %}
