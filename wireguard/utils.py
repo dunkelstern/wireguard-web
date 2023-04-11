@@ -51,9 +51,12 @@ def endpoint(public_key: str) -> str:
     try:
         result = subprocess.run(["sudo", "wg", "show", "all", "endpoints"], capture_output=True, check=True)
         for line in result.stdout.splitlines():
-            pubkey, endpoint = re.split(r"\s+", line.decode("UTF-8"), maxsplit=1)
-            if pubkey == public_key:
-                return endpoint
+            try:
+                interface, pubkey, endpoint = re.split(r"\s+", line.decode("UTF-8"), maxsplit=1)
+                if pubkey == public_key:
+                    return endpoint
+            except ValueError:
+                pass
         return None
     except subprocess.CalledProcessError:
         return None
