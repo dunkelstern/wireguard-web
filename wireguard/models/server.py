@@ -1,5 +1,6 @@
 import re
 from ipaddress import IPv4Address, IPv4Interface, IPv6Address, IPv6Interface, ip_interface
+from typing import Union
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -80,7 +81,7 @@ class WireguardServerNetworks(models.Model):
         verbose_name_plural = "Networks"
 
     @property
-    def interface(self) -> IPv4Interface | IPv6Interface:
+    def interface(self) -> Union[IPv4Interface, IPv6Interface]:
         return ip_interface(format_network(self.ip, cidr=self.cidr_mask))
 
     @property

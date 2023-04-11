@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 from ipaddress import IPv4Address, IPv4Interface, IPv6Address, IPv6Interface, ip_address, ip_interface
+from typing import Optional, Union
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -32,7 +33,7 @@ class WireguardClient(models.Model):
         return public_key_from_private(self.private_key)
 
     @property
-    def endpoint(self) -> str | None:
+    def endpoint(self) -> Optional[str]:
         """This returns the connected endpoint's IP Address"""
         result = endpoint(self.public_key)
         if result:
@@ -40,7 +41,7 @@ class WireguardClient(models.Model):
         return None
 
     @property
-    def port(self) -> int | None:
+    def port(self) -> Optional[int]:
         result = endpoint(self.public_key)
         if result:
             return int(result.rsplit(":")[-1])
@@ -73,7 +74,7 @@ class WireguardClient(models.Model):
         # add ip addresses
         if not self.pk or self.ips.count() == 0:
             # fetch all clients on this server
-            addresses: list[IPv4Address | IPv6Address] = []
+            addresses: list[Union[IPv4Address, IPv6Address]] = []
             for client in self.server.clients.all():
                 for ip in client.ips.all():
                     addresses.append(ip.ip_address)
@@ -113,7 +114,7 @@ class WireguardClientIP(models.Model):
         super().save(*args, **kwargs)
 
     @property
-    def ip_address(self) -> IPv4Address | IPv6Address:
+    def ip_address(self) -> Union[IPv4Address, IPv6Address]:
         return ip_address(self.ip)
 
     @property
@@ -147,7 +148,7 @@ class WireguardClientNetworks(models.Model):
         return f"{self.ip}/{self.cidr_mask}"
 
     @property
-    def interface(self) -> IPv4Interface | IPv6Interface:
+    def interface(self) -> Union[IPv4Interface, IPv6Interface]:
         return ip_interface(format_network(self.ip, cidr=self.cidr_mask))
 
     @property
