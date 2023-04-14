@@ -1,12 +1,18 @@
 # Wireguard management interface
 
+To make it easier to judge if this tool is for you here's a screenshot of the
+device administration interface. See `doc` directory for more screenshots.
+
+![Device detail UI](doc/device_detail.png)
+
 ## Prerequisites
 
 1. Wireguard compiled into Linux kernel (should be the case for any modern distro)
 2. Installed wireguard tools (we need the `wg-quick` and `wg` tools here)
 3. SystemD (sorry non-systemd users, I don't want to debug any other solutions)
-4. Python > 3.7
+4. Python > 3.9
 5. `sudo`
+6. `dnsmasq` if you want to use the routed DNS functionality
 
 ## Setup
 
@@ -27,7 +33,7 @@
 
 ## `.env` configuration
 
-To configure the application the only file you have to touch is the `.env` file in the source directory:
+To configure the application the only file you have to touch is the `.env` file in the source directory (there is a `.env.example` file to base your config on):
 
 ```bash
 # Base URL on which the service will be run, if you use a reverse proxy to terminate
@@ -97,6 +103,14 @@ application needs sudo rights for the following commands:
 
 - `wg show all endpoints`
 - `wg show all latest-handshakes`
+
+Example `/etc/suders.d/020-wireguard-web`:
+
+```sudoers
+# User rules for the 'wireguard-web' user
+wireguard-web ALL=(ALL) NOPASSWD: /usr/bin/wg show all endpoints
+wireguard-web ALL=(ALL) NOPASSWD: /usr/bin/wg show all latest-handshakes
+```
 
 ## Deployment
 
