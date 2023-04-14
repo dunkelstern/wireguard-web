@@ -37,7 +37,7 @@ class WireguardClient(models.Model):
         """This returns the connected endpoint's IP Address"""
         result = endpoint(self.public_key)
         if result:
-            return result.rsplit(":")[:-1]
+            return ":".join(result.rsplit(":")[:-1])
         return None
 
     @property
