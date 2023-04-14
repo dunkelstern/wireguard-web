@@ -13,9 +13,9 @@ mkdir -p /etc/wireguard-web
 
 # some path templating
 path=$(pwd)
-dnsmasq=${which dnsmasq}
-wg=${which wg}
-wgquick=${which wg-quick}
+dnsmasq=$(which dnsmasq)
+wg=$(which wg)
+wgquick=$(which wg-quick)
 
 for file in wireguard-web-config.path wireguard-web-config.service wireguard-web-dnsmasq@.service wireguard-web-wg-quick@.service ; do
     tempfile=$(mktemp /tmp/service.XXXXXXXX)
