@@ -5,7 +5,7 @@
     padding-left: 1em;
     padding-right: 1em;
     max-width: 768px;
-    font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     color: #777777;
 }
 
@@ -27,7 +27,12 @@ ul li {
     font-size: 0.625em;
 }
 
-.content h1, h2, h3, h4, h5, h6 {
+.content h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: #4b4b4b;
 }
 
@@ -70,4 +75,83 @@ ul.messages {
 .danger-button {
     background-color: #a00000;
     color: #ffffff;
+}
+
+.stretch {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+}
+
+/* Accordion styles */
+.tabs input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+
+.tabs {
+    overflow: hidden;
+}
+
+.tab {
+    width: 100%;
+    color: #000000;
+    overflow: hidden;
+}
+
+.tab-label {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background: #dddddd;
+    font-weight: bold;
+    cursor: pointer;
+    /* Icon */
+}
+
+.tab-label:hover {
+    background: #d0d0d0;
+}
+
+.tab-label::after {
+    content: "❯";
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    transition: all 0.35s;
+}
+
+.tab-content {
+    max-height: 0;
+    padding: 0 1em;
+    color: #777777;
+    background: #fafaf8;
+    transition: all 0.35s;
+}
+
+.tab-close {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1em;
+    font-size: 0.75em;
+    background: #d0d0d0;
+    cursor: pointer;
+}
+
+.tab-close:hover {
+    background: #888888;
+}
+
+input:checked+.tab-label {
+    background: #d0d0d0;
+}
+
+input:checked+.tab-label::after {
+    transform: rotate(90deg);
+}
+
+input:checked~.tab-content {
+    max-height: 100vh;
+    padding: 1em;
 }
