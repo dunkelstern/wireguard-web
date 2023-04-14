@@ -46,3 +46,22 @@ for interface in $(cat "${WIREGUARD_STAGING_CONFIG_DIRECTORY}"/interfaces.conf) 
         fi
     fi
 done
+
+# disable services not in use anymore
+disable=$(
+    (
+        cat "${WIREGUARD_STAGING_CONFIG_DIRECTORY}"/interfaces.conf
+        systemctl list-units|grep wireguard-web-wg-quick|sed -e 's/\s*wireguard-web-wg-quick@\([^.]*\).service.*/\1/'
+    ) | sort | uniq -u
+)
+echo "Disabling services not in use anymore..."
+for interface in ${disable} ; do
+    echo " - wg-quick ${interface}"
+    systemctl disable --now wireguard-web-wg-quick@${interface}
+    rm -f "/etc/wireguard-web/${interface}.conf"
+    if [ -f "/etc/wireguard-web/dnsmasq-${interface}.conf" ] ; then
+        echo " - dnsmasq ${interface}"
+        systemctl disable --now wireguard-web-dnsmasq@${interface}
+        rm -f "/etc/wireguard-web/dnsmasq-${interface}.conf"
+    fi
+done
