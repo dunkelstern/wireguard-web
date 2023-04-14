@@ -30,6 +30,7 @@ class WireguardClient(models.Model):
 
     class Meta:
         unique_together = ("server", "name")
+        ordering = ("server", "name")
 
     @property
     def public_key(self) -> str:

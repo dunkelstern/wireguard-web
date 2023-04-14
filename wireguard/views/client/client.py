@@ -17,7 +17,7 @@ class ClientListView(TemplateView):
 
     def get(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
-        context["clients"] = WireguardClient.objects.filter(owner=request.user).order_by("server", "name")
+        context["clients"] = WireguardClient.objects.filter(owner=request.user)
         return self.render_to_response(context)
 
 

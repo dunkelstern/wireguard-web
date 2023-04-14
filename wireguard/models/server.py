@@ -37,6 +37,9 @@ class WireguardServer(models.Model):
     may_route_all_traffic = models.BooleanField("Clients may access the Internet through this server", default=False)
     allow_client_bridges = models.BooleanField("Clients may bridge to their Network", default=False)
 
+    class Meta:
+        ordering = ("name", "interface_name", "enabled")
+
     @property
     def public_key(self) -> str:
         """This returns the public key that belongs to the stored private key"""
