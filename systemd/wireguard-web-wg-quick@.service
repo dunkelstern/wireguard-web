@@ -13,9 +13,9 @@ Documentation=https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/wg-quick up /etc/wireguard-web/%i.conf
-ExecStop=/usr/bin/wg-quick down /etc/wireguard-web/%i.conf
-ExecReload=/bin/bash -c 'exec /usr/bin/wg syncconf %i <(exec /usr/bin/wg-quick strip /etc/wireguard-web/%i.conf)'
+ExecStart={wgquick} up /etc/wireguard-web/%i.conf
+ExecStop={wgquick} down /etc/wireguard-web/%i.conf
+ExecReload=/bin/bash -c 'exec {wg} syncconf %i <(exec {wgquick} strip /etc/wireguard-web/%i.conf)'
 Environment=WG_ENDPOINT_RESOLUTION_RETRIES=infinity
 
 [Install]

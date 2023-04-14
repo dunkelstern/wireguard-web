@@ -9,8 +9,8 @@ Wants=nss-lookup.target
 
 [Service]
 Type=exec
-ExecStartPre=/usr/bin/dnsmasq -C /etc/wireguard-web/dnsmasq-%i.conf --test
-ExecStart=/usr/bin/dnsmasq -C /etc/wireguard-web/dnsmasq-%i.conf -k --user=dnsmasq --pid-file=/var/run/dnsmasq-%i.pid
+ExecStartPre={dnsmasq} -C /etc/wireguard-web/dnsmasq-%i.conf --test
+ExecStart={dnsmasq} -C /etc/wireguard-web/dnsmasq-%i.conf -k --user=dnsmasq --pid-file=/var/run/dnsmasq-%i.pid
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 PrivateDevices=true
