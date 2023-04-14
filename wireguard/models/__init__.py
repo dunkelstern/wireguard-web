@@ -6,11 +6,12 @@ from .server import (
     WireguardServerSelfRegistration,
 )
 from .signals import update_server_config
-from .user import User
+from .user import PasswordReset, User
 
 
 __all__ = [
     "User",
+    "PasswordReset",
     "WireguardServer",
     "WireguardServerSelfRegistration",
     "WireguardServerNetworks",

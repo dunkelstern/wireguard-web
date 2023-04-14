@@ -36,9 +36,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
-    def with_perm(
-        self, perm, is_active=True, include_superusers=True, backend=None, obj=None
-    ):
+    def with_perm(self, perm, is_active=True, include_superusers=True, backend=None, obj=None):
         if backend is None:
             backends = auth._get_backends(return_tuples=True)
             if len(backends) == 1:
@@ -49,9 +47,7 @@ class UserManager(BaseUserManager):
                     "therefore must provide the `backend` argument."
                 )
         elif not isinstance(backend, str):
-            raise TypeError(
-                "backend must be a dotted import path string (got %r)." % backend
-            )
+            raise TypeError("backend must be a dotted import path string (got %r)." % backend)
         else:
             backend = auth.load_backend(backend)
         if hasattr(backend, "with_perm"):
@@ -65,10 +61,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
-    name = models.CharField(_('name'), max_length=128, blank=True)
-    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)
+    email = models.EmailField(_("email address"), unique=True)
+    name = models.CharField(_("name"), max_length=128, blank=True)
+    date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
+    is_active = models.BooleanField(_("active"), default=True)
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
@@ -77,12 +73,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name"]
 
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def clean(self):
         super().clean()
@@ -97,3 +93,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class PasswordReset(models.Model):
+    request_count = models.IntegerField("Number of password resets in a row")
+    last_request_date = models.DateTimeField(auto_now=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_reset")
+
+    class Meta:
+        verbose_name = "Password reset"
+        verbose_name_plural = "Password resets"

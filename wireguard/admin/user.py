@@ -16,11 +16,18 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
-from wireguard.models import User
+from wireguard.models import PasswordReset, User
 
 
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
+
+
+class PasswordResetInline(admin.TabularInline):
+    model = PasswordReset
+    fields = ("request_count", "last_request_date")
+    readonly_fields = ("last_request_date",)
+    extra = 0
 
 
 @admin.register(User)
@@ -29,7 +36,7 @@ class UserAdmin(admin.ModelAdmin):
     change_user_password_template = None
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("name", )}),
+        (_("Personal info"), {"fields": ("name",)}),
         (
             _("Permissions"),
             {
@@ -64,7 +71,8 @@ class UserAdmin(admin.ModelAdmin):
         "groups",
         "user_permissions",
     )
-    readonly_fields = ("date_joined", )
+    readonly_fields = ("date_joined",)
+    inlines = (PasswordResetInline,)
 
     def get_fieldsets(self, request, obj=None):
         if not obj:
@@ -92,9 +100,7 @@ class UserAdmin(admin.ModelAdmin):
 
     def lookup_allowed(self, lookup, value):
         # Don't allow lookups involving passwords.
-        return not lookup.startswith("password") and super().lookup_allowed(
-            lookup, value
-        )
+        return not lookup.startswith("password") and super().lookup_allowed(lookup, value)
 
     @sensitive_post_parameters_m
     @csrf_protect_m
@@ -192,8 +198,7 @@ class UserAdmin(admin.ModelAdmin):
 
         return TemplateResponse(
             request,
-            self.change_user_password_template
-            or "admin/auth/user/change_password.html",
+            self.change_user_password_template or "admin/auth/user/change_password.html",
             context,
         )
 

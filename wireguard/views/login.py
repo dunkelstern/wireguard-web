@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -8,11 +10,12 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views.generic import TemplateView
 
-from wireguard.models import WireguardServerSelfRegistration
+from wireguard.models import PasswordReset, WireguardServerSelfRegistration
 
 
 User = get_user_model()
@@ -114,10 +117,42 @@ class ResetPasswordView(TemplateView):
             messages.add_message(request, messages.SUCCESS, "Password successfully changed!")
             return TemplateResponse(request, LoginView.template_name, {"username": request.POST["email"]})
 
-        # no token, send mail
+        # no token, send reset
         username = request.POST["username"]
         try:
             user = User.objects.get(email=username)
+            try:
+                user.password_reset
+
+                # rate limit 1 per 30 seconds
+                if user.password_reset.last_request_date > timezone.now() - timedelta(seconds=30):
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        "Last password reset instruction was sent "
+                        f"{int((timezone.now() - user.password_reset.last_request_date).total_seconds())} seconds ago, "
+                        "please wait at least 30 seconds for next try.",
+                    )
+                    return TemplateResponse(request, ResetPasswordView.template_name, {"username": username})
+                # rate limit 10 in 24 hours
+                if (
+                    user.password_reset.request_count >= 10
+                    and user.password_reset.last_request_date > timezone.now() - timedelta(hours=24)
+                ):
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        "Password reset requested more than 10 times in the past 24 hours, "
+                        " please wait at least one day for next try.",
+                    )
+                    return TemplateResponse(request, LoginView.template_name, {"username": username})
+                # reset the rate limit after 24 hours
+                if user.password_reset.last_request_date < timezone.now() - timedelta(hours=24):
+                    user.password_reset.request_count = 0
+                user.password_reset.request_count += 1
+                user.password_reset.save()
+            except User.password_reset.RelatedObjectDoesNotExist:
+                PasswordReset.objects.create(user=user, request_count=1)
             send_reset_mail(request, user, "wireguard/reset_password_mail.txt", "WireGuard Web Password Reset")
         except User.DoesNotExist:
             pass
