@@ -45,7 +45,7 @@ urlpatterns = [
     path("client/<int:id>", ClientDetailView.as_view(), name="client-detail"),
     path("client-delete/<int:id>", ClientDeleteView.as_view(), name="client-delete"),
     path("client-new", ClientNewView.as_view(), name="client-new"),
-    path("client-send/<int:id>", ClientSendConfigView.as_view(), name="client-send-config"),
-    path("client-config/<int:id>", ClientDownloadConfigView.as_view(), name="client-download-config"),
+    path("client-send/<int:id>/<str:typ>", ClientSendConfigView.as_view(), name="client-send-config"),
+    path("client-config/<int:id>/<str:typ>", ClientDownloadConfigView.as_view(), name="client-download-config"),
     path("client-qr/<int:id>", ClientQRConfigView.as_view(), name="client-qr-config"),
 ]

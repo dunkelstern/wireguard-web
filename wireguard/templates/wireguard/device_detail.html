@@ -153,14 +153,60 @@
 
 {% if client.id %}
 <h2>Download configuration</h2>
-<ul>
-    <li><a href="{% url 'client-download-config' client.id %}">Download WireGuard configuration</a> (for WireGuard client or <code>wg-quick</code>)</li>
-    <li><a href="{% url 'client-send-config' client.id %}">Send configuration via e-Mail</a></li>
-    <li>Instructions for profile installation</li>
-</ul>
 
-<img src="{% url 'client-qr-config' client.id %}" alt="QR-Code to scan with a mobile App" />
+<div class="tabs">
+    <div class="tab">
+      <input type="checkbox" id="chck1" checked>
+      <label class="tab-label" for="chck1">Windows, MacOS</label>
+      <div class="tab-content">
+        <ul>
+            <li><a href="{% url 'client-download-config' client.id "wg-quick" %}">Download WireGuard configuration</a></li>
+            <li><a href="{% url 'client-send-config' client.id "wg-quick" %}">Send configuration via e-Mail</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab">
+      <input type="checkbox" id="chck2">
+      <label class="tab-label" for="chck2">Linux</label>
+      <div class="tab-content">
+        <ul>
+            <li><strong>wg-quick</strong>
+                <ul>
+                    <li><a href="{% url 'client-download-config' client.id "wg-quick" %}"><code>/etc/wireguard/{{ client.server.interface_name }}.conf</code></a></li>
+                </ul>
+            </li>
+            <li><strong>NetworkManager</strong>
+                <ul>
+                    <li><a href="{% url 'client-download-config' client.id "nmconnection" %}"><code>/etc/NetworkManager/system-connections/{{ client.server.name|slugify }}.nmconnection</code></a></li>
+                </ul>
+            </li>
+            <li><strong>Systemd Networkd</strong>
+                <ul>
+                    <li><a href="{% url 'client-download-config' client.id "systemd.netdev" %}"><code>/etc/systemd/network/99-{{ client.server.interface_name }}.netdev</code></a></li>
+                    <li><a href="{% url 'client-download-config' client.id "systemd.network" %}"><code>/etc/systemd/network/50-{{ client.server.interface_name }}.network</code></a></li>
+                </ul>
+            </li>
+            <li><strong>netctl</strong>
+                <ul>
+                    <li><a href="{% url 'client-download-config' client.id "netctl" %}"><code>/etc/netctl/{{ client.server.interface_name }}</code></a></li>
+                    <li><a href="{% url 'client-download-config' client.id "wg-quick" %}"><code>/etc/wireguard/{{ client.server.interface_name }}.conf</code></a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab">
+        <input type="checkbox" id="chck3">
+        <label class="tab-label" for="chck3">Mobile devices</label>
+        <div class="tab-content">
+            <p><img class="stretch" src="{% url 'client-qr-config' client.id %}" alt="QR-Code to scan with a mobile App" /></p>
+        </div>
+      </div>
+    </div>
+</div>
+
 {% endif %}
 
 
 {% endblock %}
+

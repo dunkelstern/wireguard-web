@@ -24,7 +24,7 @@
 
     <p>Are you sure you want to send the configuration to your mail address {{ request.user.email }}?</p>
     
-    <form class="pure-form pure-form-aligned" action="{% url 'client-send-config' client.id %}" method="POST">
+    <form class="pure-form pure-form-aligned" action="{% url 'client-send-config' client.id config_type %}" method="POST">
         {% csrf_token %}
         <fieldset>
             <div class="pure-controls">
