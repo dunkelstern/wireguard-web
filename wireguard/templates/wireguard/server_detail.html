@@ -10,6 +10,11 @@
 {% endblock %}
 
 {% block content %}
+<script>
+async function clip(text) {
+    await navigator.clipboard.writeText(text)
+}
+</script>
 
 {% if messages %}
     <ul class="messages">
@@ -58,12 +63,18 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Keepalive</th>
-                    <th>Use DNS</th>
+                    {% if server.has_dns %}
+                        <th>DNS Name</th>
+                        <th>Use DNS</th>
+                    {% else %}
+                        <th>IP</th>
+                    {% endif %}
                     {% if server.may_route_all_traffic %}
                         <th>All Traffic</th>
                     {% endif %}
-                    <th>Is Bridge</th>
+                    {% if server.allow_client_bridges %}
+                        <th>Is Bridge</th>
+                    {% endif %}
                     <th>Handshake</th>
                     <th></th>
                 </tr>
@@ -75,12 +86,18 @@
                     {% for client in clients %}
                     <tr>
                         <td><a href="{% url 'client-detail' client.id %}">{{ client.name }}</a></td>
-                        <td>{{ client.keepalive}} s</td>
-                        <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% if server.has_dns %}
+                            <td><a href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
+                            <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% else %}
+                            <td>{% for ip in client.ips.all %}<a href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
+                        {% endif %}
                         {% if server.may_route_all_traffic %}
                             <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                         {% endif %}
-                        <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% if server.allow_client_bridges %}
+                            <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% endif %}
                         <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
                         <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a></td>
                     </tr>
@@ -89,6 +106,47 @@
             </tbody>
         </table>
     </div>
+    
+    {% if server.has_dns and server.clients_may_communicate %}
+        <h2>Other devices on this server</h2>
+
+        <div class="pure-g">
+            <table class="pure-table pure-table-striped pure-u-1 table-stretch">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Owner</th>
+                        {% if server.has_dns %}
+                            <th>DNS</th>
+                        {% else %}
+                            <th>IP</th>
+                        {% endif %}
+                        <th>Handshake</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if server.clients.count == clients.count %}
+                    <td colspan="5">No other devices yet!</td>
+                    {% else %}
+                        {% for client in server.clients.all %}
+                            {% if client.owner != request.user %}
+                            <tr>
+                                <td>{{ client.name }}</td>
+                                <td>{{ client.owner.email }}</td>
+                                {% if server.has_dns %}
+                                    <td><a href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
+                                {% else %}
+                                    <td>{% for ip in client.ips.all %}<a href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
+                                {% endif %}
+                                <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}
