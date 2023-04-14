@@ -2,6 +2,8 @@ from ipaddress import ip_network
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -23,6 +25,7 @@ class ClientListView(TemplateView):
 class ClientDetailView(TemplateView):
     template_name = "wireguard/device_detail.html"
 
+    @transaction.atomic
     def post(self, request, **kwargs):
         error = False
         to_save = []
@@ -50,7 +53,7 @@ class ClientDetailView(TemplateView):
 
         # edited old bridges
         for bridge in client.networks.all():
-            if request.POST[f"bridge_{bridge.id}"]:
+            if request.POST.get(f"bridge_{bridge.id}", None):
                 # update the bridge
                 try:
                     n = ip_network(request.POST[f"bridge_{bridge.id}"])
@@ -80,15 +83,21 @@ class ClientDetailView(TemplateView):
                     messages.add_message(request, messages.ERROR, "Adding of new Network failed, wrong format!")
                     error = True
 
+        if not error:
+            try:
+                for item in to_save:
+                    item.save()
+            except IntegrityError:
+                messages.add_message(request, messages.ERROR, "Name already in use, please select another!")
+                error = True
+
         if error:
             context = self.get_context_data(**kwargs)
             context["client"] = client
-            context["bridge_new_1"] = request.POST["bridge_new_1"]
-            context["brigde_new_2"] = request.POST["bridge_new_2"]
+            context["bridge_new_1"] = request.POST.get("bridge_new_1", "")
+            context["brigde_new_2"] = request.POST.get("bridge_new_2", "")
             return self.render_to_response(context)
 
-        for item in to_save:
-            item.save()
         return redirect("client-list")
 
     def get(self, request, **kwargs):
@@ -140,6 +149,9 @@ class ClientNewView(TemplateView):
             )
         except WireguardServer.DoesNotExist:
             messages.add_message(request, messages.ERROR, "No such server!")
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR, "Name already in use, please select another one!")
+            return self.get(request, **kwargs)
 
         return redirect("client-detail", id=client.id)
 
