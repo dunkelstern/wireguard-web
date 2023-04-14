@@ -6,6 +6,7 @@ Type=oneshot
 RemainAfterExit=no
 Environment=WIREGUARD_STAGING_CONFIG_DIRECTORY={config}
 ExecStart={path}/update_config.sh
+WorkingDirectory={path}
 
 [Install]
 WantedBy=multi-user.target
