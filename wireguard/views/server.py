@@ -13,7 +13,7 @@ class ServerListView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         _, domain = request.user.email.split("@")
-        context["servers"] = WireguardServer.objects.filter(self_registrations__email_domain=domain)
+        context["servers"] = WireguardServer.objects.filter(self_registrations__email_domain=domain).order_by("name")
         return self.render_to_response(context)
 
 
@@ -26,7 +26,9 @@ class ServerDetailView(TemplateView):
         _, domain = request.user.email.split("@")
         try:
             context["server"] = WireguardServer.objects.get(self_registrations__email_domain=domain, pk=kwargs["id"])
-            context["clients"] = WireguardClient.objects.filter(owner=request.user, server=context["server"])
+            context["clients"] = WireguardClient.objects.filter(owner=request.user, server=context["server"]).order_by(
+                "server", "name"
+            )
         except WireguardServer.DoesNotExist:
             context["server"] = None
             context["clients"] = []
