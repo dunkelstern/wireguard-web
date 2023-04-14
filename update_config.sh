@@ -14,6 +14,7 @@ echo "Using configuration from '$WIREGUARD_STAGING_CONFIG_DIRECTORY'"
 mkdir -p /etc/wireguard-web
 
 for interface in $(cat "${WIREGUARD_STAGING_CONFIG_DIRECTORY}"/interfaces.conf) ; do
+    file="${WIREGUARD_STAGING_CONFIG_DIRECTORY}/wg-quick/${interface}.conf"
     dnsmasq_config="${WIREGUARD_STAGING_CONFIG_DIRECTORY}/dnsmasq/dnsmasq-${interface}.conf"
 
     echo "Copying configuration for interface ${interface}..."
