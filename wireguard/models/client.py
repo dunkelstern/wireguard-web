@@ -28,6 +28,9 @@ class WireguardClient(models.Model):
         "Network interface to which to route external traffic", max_length=16, null=True, blank=True, default=None
     )
 
+    class Meta:
+        unique_together = ("server", "name")
+
     @property
     def public_key(self) -> str:
         """This returns the public key that belongs to the stored private key"""
