@@ -8,8 +8,8 @@ from .client import (
     ClientSendConfigView,
 )
 from .home import HomeView
-from .login import LoginView, LogoutView, RegisterView, ResetPasswordView
 from .server import ServerDetailView, ServerListView
+from .user_mgmt import LoginView, LogoutView, RegisterView, ResetPasswordView
 
 
 __all__ = [

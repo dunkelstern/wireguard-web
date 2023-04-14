@@ -1,62 +1,19 @@
 from datetime import timedelta
 
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail
-from django.shortcuts import redirect
-from django.template import loader
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django.utils.http import urlencode
 from django.views.generic import TemplateView
 
-from wireguard.models import PasswordReset, WireguardServerSelfRegistration
+from wireguard.models import PasswordReset
+
+from .login import LoginView
+from .utils import send_reset_mail
 
 
 User = get_user_model()
-
-
-def send_reset_mail(request, user: User, template: str, subject: str):
-    generator = PasswordResetTokenGenerator()
-    template = loader.get_template(template)
-    link = (
-        settings.BASE_URL
-        + reverse("reset-password")
-        + "?"
-        + urlencode({"token": generator.make_token(user), "email": user.email})
-    )
-
-    rendered = template.render({"server": settings.BASE_URL, "link": link, "name": user.name})
-    send_mail(subject, rendered, None, [user.email], fail_silently=True)
-
-
-class LoginView(TemplateView):
-    template_name = "wireguard/login.html"
-
-    def post(self, request):
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-        else:
-            messages.add_message(request, messages.ERROR, "Username or password not correct")
-            return TemplateResponse(request, LoginView.template_name, {"username": request.POST["username"]})
-        return redirect("home")
-
-
-@method_decorator(login_required, name="dispatch")
-class LogoutView(TemplateView):
-    template_name = "wireguard/logout.html"
-
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return super().get(request, *args, **kwargs)
 
 
 class ResetPasswordView(TemplateView):
@@ -158,45 +115,4 @@ class ResetPasswordView(TemplateView):
             pass
 
         messages.add_message(request, messages.SUCCESS, "Password reset instructions have been sent")
-        return TemplateResponse(request, LoginView.template_name, {"username": request.POST["username"]})
-
-
-class RegisterView(TemplateView):
-    template_name = "wireguard/register.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        domains = set()
-        for reg in WireguardServerSelfRegistration.objects.all():
-            domains.add(reg.email_domain)
-        context["self_registrations"] = list(domains)
-        return context
-
-    def post(self, request):
-        username = request.POST["username"]
-        try:
-            user = User.objects.get(email=username)
-        except User.DoesNotExist:
-            user = None
-
-        try:
-            _, domain = request.POST["username"].split("@", maxsplit=1)
-        except ValueError:
-            messages.add_message(request, messages.ERROR, "Please enter a valid e-mail address!")
-            return redirect("register")
-
-        if WireguardServerSelfRegistration.objects.filter(email_domain=domain.lower()).count() == 0:
-            messages.add_message(request, messages.ERROR, "Sorry you cannot register with this domain!")
-            return redirect("register")
-
-        if user:
-            messages.add_message(
-                request, messages.ERROR, "User already existed, password reset instructions have been sent"
-            )
-            send_reset_mail(request, user, "wireguard/reset_password_mail.txt", "WireGuard Web Password Reset")
-        else:
-            messages.add_message(request, messages.SUCCESS, "Please look for a welcome mail")
-            user = User.objects.create(email=request.POST["username"].lower(), name=request.POST["name"])
-            send_reset_mail(request, user, "wireguard/welcome_mail.txt", "Welcome to WireGuard Web")
-
         return TemplateResponse(request, LoginView.template_name, {"username": request.POST["username"]})
