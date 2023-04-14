@@ -64,7 +64,9 @@ def endpoint(public_key: str) -> str:
 
     for line in ENDPOINT_CACHE["data"].splitlines():
         try:
-            pubkey, endpoint = re.rsplit(r"\s+", line.decode("UTF-8"), maxsplit=1)
+            splits = re.split(r"\s+", line.decode("UTF-8"))
+            pubkey = splits[-2]
+            endpoint = splits[-1]
             if pubkey == public_key:
                 return endpoint
         except ValueError:
