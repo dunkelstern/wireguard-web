@@ -1,10 +1,12 @@
 import re
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 
 
 PUBKEY_CACHE: dict[str, str] = {}
+HANDSHAKE_CACHE = {"last_update": None, "data": None}
+ENDPOINT_CACHE = {"last_update": None, "data": None}
 
 
 def gen_key() -> str:
@@ -32,34 +34,42 @@ def public_key_from_private(private_key: str) -> str:
 
 
 def last_handshake(public_key: str) -> datetime:
-    # TODO: Cache
-    try:
-        result = subprocess.run(["sudo", "wg", "show", "all", "latest-handshakes"], capture_output=True, check=True)
-        for line in result.stdout.splitlines():
-            interface, pubkey, timestamp = re.split(r"\s+", line.decode("UTF-8"), maxsplit=2)
-            if pubkey == public_key:
-                if int(timestamp) == 0:
-                    return None
-                return datetime.fromtimestamp(int(timestamp))
-        return None
-    except subprocess.CalledProcessError:
-        return None
+    global HANDSHAKE_CACHE
+    if HANDSHAKE_CACHE["last_update"] < datetime.now() - timedelta(seconds=30):
+        try:
+            result = subprocess.run(["sudo", "wg", "show", "all", "latest-handshakes"], capture_output=True, check=True)
+            HANDSHAKE_CACHE["last_update"] = datetime.now()
+            HANDSHAKE_CACHE["data"] = result.stdout
+        except subprocess.CalledProcessError:
+            HANDSHAKE_CACHE["data"] = b""
+
+    for line in HANDSHAKE_CACHE["data"].splitlines():
+        interface, pubkey, timestamp = re.split(r"\s+", line.decode("UTF-8"), maxsplit=2)
+        if pubkey == public_key:
+            if int(timestamp) == 0:
+                return None
+            return datetime.fromtimestamp(int(timestamp))
+    return None
 
 
 def endpoint(public_key: str) -> str:
-    # TODO: Cache
-    try:
-        result = subprocess.run(["sudo", "wg", "show", "all", "endpoints"], capture_output=True, check=True)
-        for line in result.stdout.splitlines():
-            try:
-                interface, pubkey, endpoint = re.split(r"\s+", line.decode("UTF-8"), maxsplit=2)
-                if pubkey == public_key:
-                    return endpoint
-            except ValueError:
-                pass
-        return None
-    except subprocess.CalledProcessError:
-        return None
+    global ENDPOINT_CACHE
+    if ENDPOINT_CACHE["last_update"] < datetime.now() - timedelta(seconds=30):
+        try:
+            result = subprocess.run(["sudo", "wg", "show", "all", "endpoints"], capture_output=True, check=True)
+            ENDPOINT_CACHE["last_update"] = datetime.now()
+            ENDPOINT_CACHE["data"] = result.stdout
+        except subprocess.CalledProcessError:
+            ENDPOINT_CACHE["data"] = b""
+
+    for line in ENDPOINT_CACHE["data"].splitlines():
+        try:
+            interface, pubkey, endpoint = re.split(r"\s+", line.decode("UTF-8"), maxsplit=2)
+            if pubkey == public_key:
+                return endpoint
+        except ValueError:
+            pass
+    return None
 
 
 def format_network(ip: str, cidr: int = None) -> str:
