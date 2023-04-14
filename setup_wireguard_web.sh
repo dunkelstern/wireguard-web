@@ -24,7 +24,7 @@ for file in wireguard-web-config.path wireguard-web-config.service wireguard-web
         -e "s@{dnsmasq}@${dnsmasq}@" \
         -e "s@{wg}@${wg}@" \
         -e "s@{wgquick}@${wgquick}@" \
-        -e "s@{config}@${WIREGUARD_STAGING_CONFIG_DIRECTORY}@" \
+        -e "s@{config}@${WIREGUARD_STAGING_CONFIG_DIRECTORY}/interfaces.conf@" \
         systemd/$file >$tempfile
     install -o root -g root -m 0644 $tempfile /etc/systemd/system/$file
     rm $tempfile

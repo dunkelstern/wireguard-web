@@ -2,7 +2,7 @@
 Description="Monitor the wireguard-web configuration for changes and update system config"
 
 [Path]
-PathModified={config}
+PathChanged={config}
 Unit=wireguard-web-config.service
 
 [Install]

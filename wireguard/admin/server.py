@@ -73,6 +73,7 @@ class WireguardServerAdmin(admin.ModelAdmin):
                     "interface_name",
                     "hostname",
                     "port",
+                    "enabled",
                 )
             },
         ),

@@ -18,6 +18,7 @@ class WireguardServer(models.Model):
     name = models.CharField("Server name", max_length=128, null=False, blank=False, unique=True)
     interface_name = models.CharField("Network interface name", max_length=16, null=False, blank=False, unique=True)
     hostname = models.CharField("Server host-name or IP", max_length=128, null=False, blank=False)
+    enabled = models.BooleanField("Enable this server", null=False, blank=False, default=True)
 
     private_key = models.CharField("Private key", max_length=128, null=False, blank=True)
     port = models.IntegerField("Listening port", null=False, default=44000)
