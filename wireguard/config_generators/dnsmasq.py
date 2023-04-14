@@ -19,7 +19,7 @@ def dns_config(server: WireguardServer) -> str:
         config += "\n# DNS for clients\n"
         for client in server.clients.all():
             for ip in client.ips.all():
-                config += f"address=/{slugify(client.name)}.{server.dns_domain}/{ip.ip}\n"
+                config += f"address=/{client.dns_name}/{ip.ip}\n"
 
     # add dns overrides
     if server.dns.count() > 0:

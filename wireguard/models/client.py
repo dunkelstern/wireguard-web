@@ -6,6 +6,7 @@ from typing import Optional, Union
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
 
 from wireguard.signals import update_config
 from wireguard.utils import endpoint, format_network, gen_key, last_handshake, public_key_from_private
@@ -31,6 +32,13 @@ class WireguardClient(models.Model):
     def public_key(self) -> str:
         """This returns the public key that belongs to the stored private key"""
         return public_key_from_private(self.private_key)
+
+    @property
+    def dns_name(self) -> Optional[str]:
+        """If the server has DNS this returns the DNS name of this client"""
+        if self.server.has_dns:
+            return f"{slugify(self.name)}.{self.server.dns_domain}"
+        return None
 
     @property
     def endpoint(self) -> Optional[str]:

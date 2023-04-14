@@ -112,6 +112,14 @@
                 <span class="pure-form-message-inline">Generated autmatically</span>
             </div>
 
+            {% if client.server.has_dns %}
+                <div class="pure-control-group">
+                    <label for="aligned-pubkey">DNS Name</label>
+                    <input type="text" class="pure-u-1-3" id="aligned-pubkey" value="{{ client.dns_name }}" readonly="" />
+                    <span class="pure-form-message-inline">Generated autmatically</span>
+                </div>
+            {% endif %}
+
             {% if client.ips %}
                 {% for ip in client.ips.all %}
                     <div class="pure-control-group">
