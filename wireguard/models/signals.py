@@ -25,7 +25,6 @@ def save_enabled_interfaces():
 
 def update_server_config(sender, server, **kwargs):
     create_dirs()
-    save_enabled_interfaces()
 
     config_file = os.path.join(settings.CONFIG_DIRECTORY, "wg-quick", f"{server.interface_name}.conf")
     with open(config_file, "w") as fp:
@@ -46,6 +45,8 @@ def update_server_config(sender, server, **kwargs):
         qr.add_data(conf)
         image = qr.make_image()
         image.save(image_file, "PNG")
+
+    save_enabled_interfaces()
 
 
 update_config.connect(update_server_config, dispatch_uid="server_update")
