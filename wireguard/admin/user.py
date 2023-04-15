@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
-from wireguard.models import PasswordReset, User
+from wireguard.models import PasswordReset, ServerAccess, User
 
 
 csrf_protect_m = method_decorator(csrf_protect)
@@ -28,6 +28,13 @@ class PasswordResetInline(admin.TabularInline):
     fields = ("request_count", "last_request_date")
     readonly_fields = ("last_request_date",)
     extra = 0
+
+
+class ServerAccessInline(admin.TabularInline):
+    model = ServerAccess
+    fields = ("server", "created_at")
+    readonly_fields = ("created_at",)
+    extra = 1
 
 
 @admin.register(User)
@@ -72,7 +79,7 @@ class UserAdmin(admin.ModelAdmin):
         "user_permissions",
     )
     readonly_fields = ("date_joined",)
-    inlines = (PasswordResetInline,)
+    inlines = (PasswordResetInline, ServerAccessInline)
 
     def get_fieldsets(self, request, obj=None):
         if not obj:

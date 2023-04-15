@@ -141,9 +141,8 @@ class ClientNewView(TemplateView):
     template_name = "wireguard/device_detail.html"
 
     def post(self, request, **kwargs):
-        _, domain = request.user.email.split("@")
         try:
-            server = WireguardServer.objects.get(self_registrations__email_domain=domain, pk=request.POST["server"])
+            server = WireguardServer.objects.allowed_servers_for_user(request.user).get(pk=request.POST["server"])
             client = WireguardClient.objects.create(
                 name=request.POST["name"], keepalive=int(request.POST["keepalive"]), server=server, owner=request.user
             )
@@ -157,7 +156,6 @@ class ClientNewView(TemplateView):
 
     def get(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
-        _, domain = request.user.email.split("@")
         context["client"] = WireguardClient()
-        context["servers"] = WireguardServer.objects.filter(self_registrations__email_domain=domain)
+        context["servers"] = WireguardServer.objects.allowed_servers_for_user(request.user)
         return self.render_to_response(context)

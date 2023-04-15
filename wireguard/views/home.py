@@ -17,7 +17,6 @@ class HomeView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if request.user.is_authenticated:
-            _, domain = request.user.email.split("@")
-            context["servers"] = WireguardServer.objects.filter(self_registrations__email_domain=domain)
+            context["servers"] = WireguardServer.objects.allowed_servers_for_user(request.user)
             context["clients"] = WireguardClient.objects.filter(owner=request.user)
         return self.render_to_response(context)

@@ -1,4 +1,5 @@
 from .client import WireguardClient, WireguardClientIP, WireguardClientNetworks
+from .invited_users import ServerAccess
 from .server import (
     WireguardServer,
     WireguardServerDNSOverrides,
@@ -16,6 +17,7 @@ __all__ = [
     "WireguardServerSelfRegistration",
     "WireguardServerNetworks",
     "WireguardServerDNSOverrides",
+    "ServerAccess",
     "WireguardClient",
     "WireguardClientIP",
     "WireguardClientNetworks",

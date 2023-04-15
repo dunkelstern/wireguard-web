@@ -2,8 +2,10 @@ import re
 from ipaddress import IPv4Address, IPv4Interface, IPv6Address, IPv6Interface, ip_interface
 from typing import Union
 
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q, QuerySet
 
 from wireguard.signals import update_config
 from wireguard.utils import format_network, gen_key, public_key_from_private
@@ -12,6 +14,12 @@ from wireguard.utils import format_network, gen_key, public_key_from_private
 DOMAIN_REGEX = re.compile(
     r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}(?<!-)\.?))", flags=re.IGNORECASE
 )
+
+
+class ServerManager(models.Manager):
+    def allowed_servers_for_user(self, user: AbstractBaseUser) -> QuerySet:
+        _, domain = user.email.rsplit("@")
+        return self.filter(Q(self_registrations__email_domain=domain) | Q(invites__user=user))
 
 
 class WireguardServer(models.Model):
@@ -36,6 +44,8 @@ class WireguardServer(models.Model):
     clients_may_communicate = models.BooleanField("Clients may communicate with each other", default=True)
     may_route_all_traffic = models.BooleanField("Clients may access the Internet through this server", default=False)
     allow_client_bridges = models.BooleanField("Clients may bridge to their Network", default=False)
+
+    objects = ServerManager()
 
     class Meta:
         ordering = ("name", "interface_name", "enabled")
