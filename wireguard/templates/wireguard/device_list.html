@@ -18,7 +18,7 @@
     </ul>
 {% endif %}
 
-<h2>Devices <span class="headerlink"><a href="{% url 'client-new' %}"><span class="material-icons">note_add</span>Create a new device</a></span></h2>
+<h2>Devices {% if servers.count > 0 %}<span class="headerlink"><a href="{% url 'client-new' %}"><span class="material-icons">note_add</span>Create a new device</a></span>{% endif %}</h2>
 
 <div class="pure-g">
     <table class="pure-table pure-table-striped pure-u-1 table-stretch">
