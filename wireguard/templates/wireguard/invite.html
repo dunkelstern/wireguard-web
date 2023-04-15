@@ -26,15 +26,15 @@
         {% endif %}
         <div class="pure-control-group">
             <label for="aligned-name">Name</label>
-            <input type="text" name="name" class="pure-u-1-3" id="aligned-name" placeholder="Name" {% if name %}value="{{ name }}"{% endif%} />
+            <input type="text" name="name" class="pure-u-1 pure-u-md-1-3" id="aligned-name" placeholder="Name" {% if name %}value="{{ name }}"{% endif%} />
         </div>
         <div class="pure-control-group">
             <label for="aligned-username">E-Mail</label>
-            <input type="text" name="username" class="pure-u-1-3" id="aligned-username" placeholder="e-Mail" {% if username %}value="{{ username }}"{% endif%} />
+            <input type="text" name="username" class="pure-u-1 pure-u-md-1-3" id="aligned-username" placeholder="e-Mail" {% if username %}value="{{ username }}"{% endif%} />
         </div>
         <div class="pure-control-group">
             <label for="aligned-servers">Servers</label>
-            <select name="servers" id="aligned-username" class="pure-u-1-3" multiple>
+            <select name="servers" id="aligned-username" class="pure-u-1 pure-u-md-1-3" multiple>
                 {% for server in servers %}
                     <option value="{{ server.id }}">{{ server.name }}</option>
                 {% endfor %}
