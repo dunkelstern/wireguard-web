@@ -97,13 +97,31 @@ ul.messages {
 
 /* Overrides */
 
-.pure-form-aligned .pure-control-group label {
-    width: 33%;
+@media screen and (min-width: 64em) {
+    .pure-form-aligned .pure-control-group label {
+        width: 33%;
+    }
+
+    .pure-form-aligned .pure-controls {
+        margin-left: calc(33% + 1.5em);
+    }
 }
 
-.pure-form-aligned .pure-controls {
-    margin-left: calc(33% + 1.5em);
+@media screen and (max-width: 48em) {
+    .pure-form-aligned .pure-control-group label {
+        width: auto;
+    }
+
+    .pure-form-aligned .pure-controls {
+        margin-left: 0;
+    }
+
+    .pure-form button[type="submit"] {
+        margin: auto;
+        margin-right: 1em;
+    }
 }
+
 
 /* Accordion styles */
 .tabs input {
