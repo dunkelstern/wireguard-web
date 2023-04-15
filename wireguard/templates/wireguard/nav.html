@@ -10,6 +10,11 @@
     <a class="pure-menu-link" href="{% url 'client-list' %}"><span class="material-icons">devices</span>Devices</a>
 </li>
 {% if request.user.is_staff %}
+<li class="pure-menu-item {% if nav == 'invite'%}pure-menu-selected{% endif %}">
+    <a class="pure-menu-link" href="{% url 'invite' %}"><span class="material-icons">person_add</span>Invite</a>
+</li>
+{% endif %}
+{% if request.user.is_staff %}
 <li class="pure-menu-item {% if nav == 'admin'%}pure-menu-selected{% endif %}">
     <a class="pure-menu-link" href="{% url 'admin:index' %}"><span class="material-icons">admin_panel_settings</span>Admin</a>
 </li>

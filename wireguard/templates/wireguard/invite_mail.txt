@@ -1,0 +1,17 @@
+Hi {{ name }},
+
+You were invited by an admin of the VPN self-service portal at {{ server }} to
+create an account.
+
+To activate your account please reset your password by using the following link:
+
+{{ link | safe }}
+
+And log in with your e-mail address afterwards.
+
+If you did not want an account at {{ server }}, please ignore this mail, any
+information saved about this request will be deleted in 30 days.
+
+Sincerely,
+
+Admin

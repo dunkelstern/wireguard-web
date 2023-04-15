@@ -9,7 +9,7 @@ from .client import (
 )
 from .home import HomeView
 from .server import ServerDetailView, ServerListView
-from .user_mgmt import LoginView, LogoutView, RegisterView, ResetPasswordView
+from .user_mgmt import InviteView, LoginView, LogoutView, RegisterView, ResetPasswordView
 
 
 __all__ = [
@@ -18,6 +18,7 @@ __all__ = [
     "LogoutView",
     "ResetPasswordView",
     "RegisterView",
+    "InviteView",
     "ServerListView",
     "ServerDetailView",
     "ClientListView",
