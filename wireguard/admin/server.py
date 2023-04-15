@@ -106,12 +106,12 @@ class WireguardServerAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None) -> bool:
         has_permission = super().has_change_permission(request, obj)
-        if has_permission:
+        if has_permission and obj:
             return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.pk).count() > 0
         return has_permission
 
     def has_delete_permission(self, request, obj=None) -> bool:
         has_permission = super().has_delete_permission(request, obj)
-        if has_permission:
+        if has_permission and obj:
             return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.pk).count() > 0
         return has_permission
