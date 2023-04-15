@@ -91,6 +91,10 @@ ul.messages {
     max-height: 500px;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 /* Overrides */
 
 .pure-form-aligned .pure-control-group label {

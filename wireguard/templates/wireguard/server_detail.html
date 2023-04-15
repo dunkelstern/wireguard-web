@@ -87,10 +87,10 @@ async function clip(text) {
                     <tr>
                         <td><a href="{% url 'client-detail' client.id %}">{{ client.name }}</a></td>
                         {% if server.has_dns %}
-                            <td><a href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
+                            <td><a class="nowrap" href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
                             <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                         {% else %}
-                            <td>{% for ip in client.ips.all %}<a href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
+                            <td>{% for ip in client.ips.all %}<a class="nowrap" href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
                         {% endif %}
                         {% if server.may_route_all_traffic %}
                             <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
@@ -134,9 +134,9 @@ async function clip(text) {
                                 <td>{{ client.name }}</td>
                                 <td>{{ client.owner.email }}</td>
                                 {% if server.has_dns %}
-                                    <td><a href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
+                                    <td><a class="nowrap" href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
                                 {% else %}
-                                    <td>{% for ip in client.ips.all %}<a href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
+                                    <td>{% for ip in client.ips.all %}<a class="nowrap" href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
                                 {% endif %}
                                 <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
                             </tr>
