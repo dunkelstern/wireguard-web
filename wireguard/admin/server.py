@@ -104,13 +104,13 @@ class WireguardServerAdmin(admin.ModelAdmin):
     inlines = (WireguardServerNetworksInline, DNSOverrideInline, WireguardServerSelfRegistrationInline, ClientInline)
     actions = [generate_wgquick, generate_dnsconfig]
 
-    def has_change_permission(self, request, obj) -> bool:
+    def has_change_permission(self, request, obj=None) -> bool:
         has_permission = super().has_change_permission(request, obj)
         if has_permission:
             return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.pk).count() > 0
         return has_permission
 
-    def has_delete_permission(self, request, obj) -> bool:
+    def has_delete_permission(self, request, obj=None) -> bool:
         has_permission = super().has_delete_permission(request, obj)
         if has_permission:
             return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.pk).count() > 0
