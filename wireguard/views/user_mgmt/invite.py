@@ -45,7 +45,7 @@ class InviteView(TemplateView):
     def get(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
         if request.user.is_staff:
-            context["servers"] = WireguardServer.objects.all()
+            context["servers"] = WireguardServer.objects.allowed_servers_for_user(request.user)
             return self.render_to_response(context)
         else:
             return Http404

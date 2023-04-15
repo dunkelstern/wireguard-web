@@ -19,7 +19,10 @@ DOMAIN_REGEX = re.compile(
 class ServerManager(models.Manager):
     def allowed_servers_for_user(self, user: AbstractBaseUser) -> QuerySet:
         _, domain = user.email.rsplit("@")
-        return self.filter(Q(self_registrations__email_domain=domain) | Q(invites__user=user))
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(Q(self_registrations__email_domain=domain) | Q(invites__user=user))
 
 
 class WireguardServer(models.Model):
