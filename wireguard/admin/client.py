@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 
 from wireguard.config_generators.wgquick import client_config
-from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientNetworks
+from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientNetworks, WireguardServer
 
 
 @admin.action(description="Generate wg-quick config")
@@ -53,3 +53,15 @@ class WireguardClientAdmin(admin.ModelAdmin):
     list_display = ("name", "owner", "server", "route_all_traffic", "last_handshake")
     inlines = (WireguardClientIPsInline, WireguardClientNetworksInline)
     actions = (generate_wgquick,)
+
+    def has_change_permission(self, request, obj) -> bool:
+        has_permission = super().has_change_permission(request, obj)
+        if has_permission:
+            return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.server.pk).count() > 0
+        return has_permission
+
+    def has_delete_permission(self, request, obj) -> bool:
+        has_permission = super().has_delete_permission(request, obj)
+        if has_permission:
+            return WireguardServer.objects.allowed_servers_for_user(request.user).filter(pk=obj.server.pk).count() > 0
+        return has_permission
