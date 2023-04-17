@@ -11,14 +11,16 @@ Before releasing 1.0 we want the following to work:
 
 1. Stable network bridging (currently very beta)
 2. Server management through native UI, not just Django admin
-3. Refactor form parsing for client editing UI
-4. Zero Trust/Peer2Peer VPN support. This means your wireguard client will connect directly to the server if you're in
+3. User management through native UI
+4. Documentation and Step by step How-tos
+5. Refactor form parsing for client editing UI
+6. Zero Trust/Peer2Peer VPN support. This means your wireguard client will connect directly to the server if you're in
    the same network and not go through a central concentration point. This means we need the following:
    - Zero Trust Service endpoints need a mechanism to update their peer list dynamically (API + Additional client)
    - Clients that access Zero Trust endpoints need routing priorities to only use the VPN gateway when the service
      endpoint is not reachable from the local net (Probably works just by configuring the corresponding peers in the
      wireguard client)
-5. Appliance style Docker container for easier deployment
+7. Appliance style Docker container for easier deployment
 
 ## Prerequisites
 
