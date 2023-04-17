@@ -1,5 +1,6 @@
 {% extends 'wireguard/base.html' %}
 {% load static %}
+{% load relativetime %}
 
 {% block title %}Wireguard Web client list{% endblock %}
 
@@ -42,11 +43,11 @@
                 <tr>
                     <td><a href="{% url 'client-detail' client.id %}">{{ client.name }}</a></td>
                     <td><a href="{% url 'server-detail' client.server.id %}">{{ client.server.name }}</a></td>        
-                    <td>{{ client.keepalive}} s</td>
+                    <td>{% if client.keepalive > 0 %}{{ client.keepalive}} s{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
-                    <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                    <td class="{% conditionaltime client.last_handshake "10 minutes ago" "stale" "current" %}">{% if client.last_handshake %}{{ client.last_handshake | relativetime }} {% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a><a href="{% url 'client-delete' client.id %}"><span class="material-icons">delete</span></a></td>
                 </tr>
                 {% endfor %}

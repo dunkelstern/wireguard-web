@@ -95,6 +95,14 @@ ul.messages {
     white-space: nowrap;
 }
 
+.stale {
+    color: #a00000;
+}
+
+.current {
+    color: #00a000;
+}
+
 /* Overrides */
 
 @media screen and (min-width: 64em) {
