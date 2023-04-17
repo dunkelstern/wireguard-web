@@ -8,6 +8,8 @@ django = "*"
 qrcode = "*"
 pillow = "*"
 whitenoise = "*"
+humanize = "*"
+dateparser = "*"
 
 [dev-packages]
 black = "*"
