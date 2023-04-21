@@ -27,6 +27,7 @@ from wireguard.views import (
     InviteView,
     LoginView,
     LogoutView,
+    PeeringView,
     RegisterView,
     ResetPasswordView,
     ServerDetailView,
@@ -50,4 +51,5 @@ urlpatterns = [
     path("client-send/<int:id>/<str:typ>", ClientSendConfigView.as_view(), name="client-send-config"),
     path("client-config/<int:id>/<str:typ>", ClientDownloadConfigView.as_view(), name="client-download-config"),
     path("client-qr/<int:id>", ClientQRConfigView.as_view(), name="client-qr-config"),
+    path("peering-request", PeeringView.as_view(), name="peering-request"),
 ]

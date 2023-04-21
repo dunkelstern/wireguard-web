@@ -25,6 +25,7 @@ class WireguardClient(models.Model):
     )
 
     private_key = models.CharField("Private key", max_length=128, null=False, blank=True)
+    public_key = models.CharField("Public key", max_length=128, null=False, blank=True)
     keepalive = models.IntegerField("Keepalive timeout", null=False, default=0)
 
     use_dns = models.BooleanField(
@@ -66,11 +67,6 @@ class WireguardClient(models.Model):
         ordering = ("server", "name")
 
     @property
-    def public_key(self) -> str:
-        """This returns the public key that belongs to the stored private key"""
-        return public_key_from_private(self.private_key)
-
-    @property
     def dns_name(self) -> Optional[str]:
         """If the server has DNS this returns the DNS name of this client"""
         if self.server.has_dns:
@@ -89,7 +85,10 @@ class WireguardClient(models.Model):
     def port(self) -> Optional[int]:
         result = endpoint(self.public_key)
         if result:
-            return int(result.rsplit(":")[-1])
+            try:
+                return int(result.rsplit(":")[-1])
+            except ValueError:
+                return None
         return None
 
     @property
@@ -110,6 +109,7 @@ class WireguardClient(models.Model):
         # generate new private key
         if not self.private_key:
             self.private_key = gen_key()
+            self.public_key = public_key_from_private(self.private_key)
 
         if self.server.keepalive:
             self.keepalive = self.server.keepalive

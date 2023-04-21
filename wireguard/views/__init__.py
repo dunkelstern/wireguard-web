@@ -8,6 +8,7 @@ from .client import (
     ClientSendConfigView,
 )
 from .home import HomeView
+from .p2p import PeeringView
 from .server import ServerDetailView, ServerListView
 from .user_mgmt import InviteView, LoginView, LogoutView, RegisterView, ResetPasswordView
 
@@ -28,4 +29,5 @@ __all__ = [
     "ClientSendConfigView",
     "ClientDownloadConfigView",
     "ClientQRConfigView",
+    "PeeringView",
 ]
