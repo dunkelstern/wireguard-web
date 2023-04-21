@@ -89,6 +89,7 @@ class WireguardServerAdmin(admin.ModelAdmin):
                     "may_route_all_traffic",
                     "clients_may_communicate",
                     "allow_client_bridges",
+                    "allow_direct_peering",
                     "keepalive",
                     "fw_mark",
                 ),
