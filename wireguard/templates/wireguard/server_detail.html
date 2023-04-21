@@ -1,5 +1,6 @@
 {% extends 'wireguard/base.html' %}
 {% load static %}
+{% load relativetime %}
 
 {% block title %}Wireguard Web servers list{% endblock %}
 
@@ -107,7 +108,7 @@ async function clip(text) {
                         {% if server.allow_direct_peering %}
                             <td>{% if client.allow_direct_peering %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                         {% endif %}
-                        <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                        <td class="{% conditionaltime client.last_handshake "10 minutes ago" "stale" "current" %}">{% if client.last_handshake %}{{ client.last_handshake | relativetime }} {% else %}<span class="material-icons">close</span>{% endif %}</td>
                         <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a></td>
                     </tr>
                     {% endfor %}
@@ -153,7 +154,7 @@ async function clip(text) {
                                 {% if server.allow_direct_peering %}
                                     <td>{% if client.allow_direct_peering %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                                 {% endif %}
-                                <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
+                                <td class="{% conditionaltime client.last_handshake "10 minutes ago" "stale" "current" %}">{% if client.last_handshake %}{{ client.last_handshake | relativetime }} {% else %}<span class="material-icons">close</span>{% endif %}</td>
                             </tr>
                             {% endif %}
                         {% endfor %}
