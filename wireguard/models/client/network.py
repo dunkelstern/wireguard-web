@@ -7,9 +7,13 @@ from wireguard.utils import format_network
 
 
 class WireguardClientNetworks(models.Model):
-    ip = models.GenericIPAddressField("IP Network", unpack_ipv4=True)
+    ip = models.GenericIPAddressField(
+        "Network address",
+        unpack_ipv4=True,
+        help_text="The address of a network that this client should be a router for",
+    )
     cidr_mask = models.IntegerField(
-        "Netmask in CIDR form for this network",
+        "Netmask",
         null=False,
         blank=False,
     )

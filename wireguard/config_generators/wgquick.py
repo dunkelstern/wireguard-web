@@ -39,8 +39,6 @@ def server_config(server: WireguardServer) -> str:
             PublicKey = {peer.public_key}
             """
         )
-        if peer.preshared_key:
-            conf += f"PresharedKey = {peer.preshared_key}\n"
         if peer.keepalive:
             conf += f"PersistentKeepalive = {peer.keepalive}\n"
         ips: list[str] = []

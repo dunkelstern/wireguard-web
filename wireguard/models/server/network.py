@@ -7,17 +7,23 @@ from wireguard.utils import format_network
 
 
 class WireguardServerNetworks(models.Model):
-    ip = models.GenericIPAddressField("IP Address of server in Network", unpack_ipv4=True)
+    ip = models.GenericIPAddressField(
+        "IP Address", unpack_ipv4=True, help_text="IP address of the server in this network"
+    )
     cidr_mask = models.IntegerField(
-        "If set, automatically update the client's allowed IPs to route to this net",
+        "Netmask",
         null=True,
         default=None,
         blank=True,
+        help_text="If this is set to a non-blank value it defines this is a network address and clients will "
+        " get a route for this network",
     )
     server = models.ForeignKey(
         "wireguard.WireguardServer", on_delete=models.CASCADE, null=False, blank=False, related_name="networks"
     )
-    is_client_network = models.BooleanField("Clients will get IPs from this network", default=False)
+    is_client_network = models.BooleanField(
+        "Client network", default=False, help_text="If set then clients will get random IPs from this network"
+    )
 
     class Meta:
         verbose_name = "Network"

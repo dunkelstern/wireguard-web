@@ -17,28 +17,84 @@ class ServerManager(models.Manager):
 
 
 class WireguardServer(models.Model):
-    name = models.CharField("Server name", max_length=128, null=False, blank=False, unique=True)
-    interface_name = models.CharField("Network interface name", max_length=16, null=False, blank=False, unique=True)
-    hostname = models.CharField("Server host-name or IP", max_length=128, null=False, blank=False)
-    enabled = models.BooleanField("Enable this server", null=False, blank=False, default=True)
+    name = models.CharField(
+        "Server name",
+        max_length=128,
+        null=False,
+        blank=False,
+        unique=True,
+        help_text="The server name to identify this VPN. This becomes the DNS name of the server",
+    )
+    interface_name = models.CharField(
+        "Network interface",
+        max_length=16,
+        null=False,
+        blank=False,
+        unique=True,
+        help_text="The interface name for this network, usual values are 'wg0' or 'wt0', but may be anything",
+    )
+    hostname = models.CharField(
+        max_length=128,
+        null=False,
+        blank=False,
+        help_text="Server host-name or IP address on which this is reachable from the clients",
+    )
+    enabled = models.BooleanField("Enabled", null=False, blank=False, default=True)
 
     private_key = models.CharField("Private key", max_length=128, null=False, blank=True)
-    port = models.IntegerField("Listening port", null=False, default=44000)
-    fw_mark = models.IntegerField("FWMark for outgoing packets", null=False, default=0)
-    keepalive = models.IntegerField("Persistent keepalive timeout", null=False, default=0)
+    port = models.IntegerField(
+        "Listening port",
+        null=False,
+        default=44000,
+        help_text="Port to listen on. If the server is behind a NAT please forward this UDP port. Use port > 1024",
+    )
+    fw_mark = models.IntegerField("FWMark", null=False, default=0)
+    keepalive = models.IntegerField(
+        "Keepalive timeout (seconds)",
+        null=False,
+        default=0,
+        help_text="If this is set to a non-zero value this server enforces all clients to send keepalive messages",
+    )
 
-    has_dns = models.BooleanField("This server has a DNS resolver", default=False)
+    has_dns = models.BooleanField(
+        "DNS",
+        default=False,
+        help_text="This server should have a DNS resolver, an instance of dnsmasq is configured and started",
+    )
     dns_domain = models.CharField(
-        "Domain name for all clients when DNS is enabled", max_length=128, default="vpn.local"
+        "DNS Domain", max_length=128, default="vpn.local", help_text="Domain name for all clients when DNS is enabled"
     )
-    is_exitnode = models.BooleanField("This server is a NAT gateway/exit node", default=False)
+    is_exitnode = models.BooleanField(
+        "Exitnode",
+        default=False,
+        help_text="This server is a NAT gateway or exit node, if you enable routing all traffic through this "
+        "server make sure the internet is accessible from the exit interface",
+    )
     exit_interface = models.CharField(
-        "Network interface to which to route external traffic", max_length=16, null=True, blank=True, default=None
+        "NAT exit interface",
+        max_length=16,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Network interface to which to route external traffic",
     )
-    clients_may_communicate = models.BooleanField("Clients may communicate with each other", default=True)
-    may_route_all_traffic = models.BooleanField("Clients may access the Internet through this server", default=False)
-    allow_client_bridges = models.BooleanField("Clients may bridge to their Network", default=False)
-    allow_direct_peering = models.BooleanField("Allow client peer2peer communication", default=True)
+    clients_may_communicate = models.BooleanField(
+        "Client communication", default=True, help_text="Clients may communicate with each other and the VPN server"
+    )
+    may_route_all_traffic = models.BooleanField(
+        "All traffic",
+        default=False,
+        help_text="Clients may access the Internet through this server by routing all IP traffic",
+    )
+    allow_client_bridges = models.BooleanField(
+        "Client Bridges",
+        default=False,
+        help_text="Clients may bridge to their Network, be aware only staff users can configure their devices "
+        "to allow bridges",
+    )
+    allow_direct_peering = models.BooleanField(
+        "Client P2P", default=True, help_text="Allow client peer2peer communication"
+    )
 
     objects = ServerManager()
 

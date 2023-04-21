@@ -7,15 +7,24 @@ from wireguard.utils import format_network
 
 
 class WireguardClientLocalNetwork(models.Model):
-    ip = models.GenericIPAddressField("IP Address", unpack_ipv4=True)
+    ip = models.GenericIPAddressField(
+        "IP Address", unpack_ipv4=True, help_text="This defines the IP address the client has in it's local network"
+    )
     cidr_mask = models.IntegerField(
         "Network mask (CIDR)",
         null=True,
         default=None,
         blank=False,
     )
-    gateway = models.GenericIPAddressField("Gateway IP Address", unpack_ipv4=True)
-    public_ip = models.GenericIPAddressField("Public IP Address", unpack_ipv4=True)
+    gateway = models.GenericIPAddressField(
+        "Gateway IP", unpack_ipv4=True, help_text="The default Gateway the client has in it's local network"
+    )
+    public_ip = models.GenericIPAddressField(
+        "Public IP",
+        unpack_ipv4=True,
+        help_text="The public IP address seen when this entry was created, if the client endpoint changes from "
+        "this value the entry becomes invalid.",
+    )
     client = models.ForeignKey(
         "wireguard.WireguardClient", on_delete=models.CASCADE, null=False, blank=False, related_name="local_networks"
     )

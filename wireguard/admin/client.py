@@ -60,7 +60,7 @@ class WireguardClientLocalNetworksInline(admin.TabularInline):
 @admin.register(WireguardClient)
 class WireguardClientAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {"fields": ("name", "preshared_key", "owner", "server")}),
+        (None, {"fields": ("name", "owner", "server")}),
         (
             "Advanced",
             {

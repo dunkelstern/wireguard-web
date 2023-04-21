@@ -5,7 +5,9 @@ from django.db import models
 
 
 class WireguardClientIP(models.Model):
-    ip = models.GenericIPAddressField("IP Address of client in Network", unpack_ipv4=True)
+    ip = models.GenericIPAddressField(
+        "IP Address", unpack_ipv4=True, help_text="This defines an IP address the client will be assigned by wireguard"
+    )
     client = models.ForeignKey(
         "wireguard.WireguardClient", on_delete=models.CASCADE, null=False, blank=False, related_name="ips"
     )

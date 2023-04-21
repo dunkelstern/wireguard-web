@@ -15,21 +15,51 @@ from .ip import WireguardClientIP
 
 
 class WireguardClient(models.Model):
-    name = models.CharField("Client name", max_length=128, null=False, blank=False, unique=True)
+    name = models.CharField(
+        "Client name",
+        max_length=128,
+        null=False,
+        blank=False,
+        unique=True,
+        help_text="The client name to identify this device. This becomes the DNS name",
+    )
 
     private_key = models.CharField("Private key", max_length=128, null=False, blank=True)
-    preshared_key = models.CharField("Pre-Shared Key, optional", max_length=128, null=True, blank=True)
-    keepalive = models.IntegerField("Persistent keepalive timeout", null=False, default=0)
+    keepalive = models.IntegerField("Keepalive timeout", null=False, default=0)
 
-    use_dns = models.BooleanField("Use the DNS of the server", default=False)
+    use_dns = models.BooleanField(
+        "Use server DNS",
+        default=False,
+        help_text="Select this to use the VPN's DNS server. If you're routing all traffic through this server, "
+        "all DNS queries will go through the server too. If not all traffic is routed through the DNS "
+        "the implementation on the clients differ, but optimally they will only send queries for the "
+        "DNS domain.",
+    )
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=False)
     server = models.ForeignKey("wireguard.WireguardServer", on_delete=models.PROTECT, related_name="clients")
-    route_all_traffic = models.BooleanField("Route all traffic through this Connection", default=False)
-    is_exitnode = models.BooleanField("This client is a NAT gateway/exit node to a bridged network", default=False)
-    exit_interface = models.CharField(
-        "Network interface to which to route external traffic", max_length=16, null=True, blank=True, default=None
+    route_all_traffic = models.BooleanField(
+        "Route all traffic",
+        default=False,
+        help_text="Directs the client to route all traffic through this VPN, be aware that this might break local "
+        "access to the network.",
     )
-    allow_direct_peering = models.BooleanField("Allow direct communication with this client", default=False)
+    is_exitnode = models.BooleanField(
+        "Exitnode", default=False, help_text="This client is a NAT gateway/exit node to a bridged network"
+    )
+    exit_interface = models.CharField(
+        "Exit interface",
+        max_length=16,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Network interface to which to route external traffic",
+    )
+    allow_direct_peering = models.BooleanField(
+        "Allow P2P target",
+        default=False,
+        help_text="Allow direct communication with this client by other clients in the same network without "
+        "bouncing traffic over the VPN server",
+    )
 
     class Meta:
         unique_together = ("server", "name")

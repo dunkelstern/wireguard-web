@@ -3,7 +3,11 @@ from django.db import models
 
 class WireguardServerSelfRegistration(models.Model):
     email_domain = models.CharField(
-        "Users with this e-mail domain may self-register on this Server", max_length=128, null=False, blank=False
+        "e-Mail domain",
+        max_length=128,
+        null=False,
+        blank=False,
+        help_text="Users with this e-mail domain may self-register on this Server",
     )
     server = models.ForeignKey(
         "wireguard.WireguardServer",
