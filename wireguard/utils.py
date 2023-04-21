@@ -5,8 +5,8 @@ from hashlib import sha256
 
 
 PUBKEY_CACHE: dict[str, str] = {}
-HANDSHAKE_CACHE = {"last_update": datetime.now(), "data": b""}
-ENDPOINT_CACHE = {"last_update": datetime.now(), "data": b""}
+HANDSHAKE_CACHE = {"last_update": datetime.now() - timedelta(hours=1), "data": b""}
+ENDPOINT_CACHE = {"last_update": datetime.now() - timedelta(hours=1), "data": b""}
 
 
 def gen_key() -> str:
