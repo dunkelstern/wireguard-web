@@ -30,6 +30,7 @@
                 <th>DNS</th>
                 <th>Internet</th>
                 <th>Bridge</th>
+                <th>P2P</th>
                 <th>Handshake</th>
                 <th></th>
             </tr>
@@ -46,6 +47,7 @@
                     <td>{% if client.use_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.route_all_traffic %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                    <td>{% if client.allow_direct_peering %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                     <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
                     <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a><a href="{% url 'client-delete' client.id %}"><span class="material-icons">delete</span></a></td>
                 </tr>

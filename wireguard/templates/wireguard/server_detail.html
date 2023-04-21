@@ -49,6 +49,9 @@ async function clip(text) {
         {% if server.clients_may_communicate %}
         <li>Clients can communicate with each other</li>
         {% endif %}
+        {% if server.allow_direct_peering %}
+        <li>Clients can communicate P2P without sending traffic through this server</li>
+        {% endif %}
         {% if server.may_route_all_traffic %}
         <li>Clients may access the Internet through this server</li>
         {% else %}
@@ -75,6 +78,9 @@ async function clip(text) {
                     {% if server.allow_client_bridges %}
                         <th>Is Bridge</th>
                     {% endif %}
+                    {% if server.allow_direct_peering %}
+                        <th>P2P</th>
+                    {% endif %}
                     <th>Handshake</th>
                     <th></th>
                 </tr>
@@ -97,6 +103,9 @@ async function clip(text) {
                         {% endif %}
                         {% if server.allow_client_bridges %}
                             <td>{% if client.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
+                        {% endif %}
+                        {% if server.allow_direct_peering %}
+                            <td>{% if client.allow_direct_peering %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                         {% endif %}
                         <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
                         <td><a href="{% url 'client-detail' client.id %}"><span class="material-icons">description</span></a></td>
@@ -121,6 +130,9 @@ async function clip(text) {
                         {% else %}
                             <th>IP</th>
                         {% endif %}
+                        {% if server.allow_direct_peering %}
+                            <th>P2P</th>
+                        {% endif %}
                         <th>Handshake</th>
                     </tr>
                 </thead>
@@ -137,6 +149,9 @@ async function clip(text) {
                                     <td><a class="nowrap" href="javascript: clip('{{ client.dns_name }}')"><span class="material-icons">content_copy</span>{{ client.dns_name }}</a></td>
                                 {% else %}
                                     <td>{% for ip in client.ips.all %}<a class="nowrap" href="javascript: clip('{{ ip.ip }}')"><span class="material-icons">content_copy</span>{{ ip.ip }}</a><br>{% endfor %}</td>
+                                {% endif %}
+                                {% if server.allow_direct_peering %}
+                                    <td>{% if client.allow_direct_peering %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                                 {% endif %}
                                 <td>{% if client.last_handshake %}{{ client.last_handshake }} {% else %} - {% endif %}</td>
                             </tr>

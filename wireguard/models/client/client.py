@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from ipaddress import IPv4Address, IPv4Interface, IPv6Address, IPv6Interface, ip_address, ip_interface
+from ipaddress import IPv4Address, IPv6Address, ip_address, ip_interface
 from typing import Optional, Union
 
 from django.conf import settings
@@ -10,6 +10,8 @@ from django.utils.text import slugify
 
 from wireguard.signals import update_config
 from wireguard.utils import endpoint, format_network, gen_key, last_handshake, public_key_from_private
+
+from .ip import WireguardClientIP
 
 
 class WireguardClient(models.Model):
@@ -27,6 +29,7 @@ class WireguardClient(models.Model):
     exit_interface = models.CharField(
         "Network interface to which to route external traffic", max_length=16, null=True, blank=True, default=None
     )
+    allow_direct_peering = models.BooleanField("Allow direct communication with this client", default=False)
 
     class Meta:
         unique_together = ("server", "name")
@@ -111,62 +114,3 @@ class WireguardClient(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}@{self.server}"
-
-
-class WireguardClientIP(models.Model):
-    ip = models.GenericIPAddressField("IP Address of client in Network", unpack_ipv4=True)
-    client = models.ForeignKey(WireguardClient, on_delete=models.CASCADE, null=False, blank=False, related_name="ips")
-
-    class Meta:
-        verbose_name = "IP Address"
-        verbose_name_plural = "IP Addresses"
-
-    def save(self, *args, **kwargs):
-        # TODO: Make sure we do not collide with any other client on the same network
-        super().save(*args, **kwargs)
-
-    @property
-    def ip_address(self) -> Union[IPv4Address, IPv6Address]:
-        return ip_address(self.ip)
-
-    @property
-    def is_ipv4(self) -> bool:
-        return isinstance(self.ip_address, IPv4Address)
-
-    @property
-    def is_ipv6(self) -> bool:
-        return isinstance(self.ip_address, IPv6Address)
-
-    def __str__(self) -> str:
-        return f"{self.ip}"
-
-
-class WireguardClientNetworks(models.Model):
-    ip = models.GenericIPAddressField("IP Network", unpack_ipv4=True)
-    cidr_mask = models.IntegerField(
-        "Netmask in CIDR form for this network",
-        null=False,
-        blank=False,
-    )
-    client = models.ForeignKey(
-        WireguardClient, on_delete=models.CASCADE, null=False, blank=False, related_name="networks"
-    )
-
-    class Meta:
-        verbose_name = "Network"
-        verbose_name_plural = "Networks"
-
-    def __str__(self) -> str:
-        return f"{self.ip}/{self.cidr_mask}"
-
-    @property
-    def interface(self) -> Union[IPv4Interface, IPv6Interface]:
-        return ip_interface(format_network(self.ip, cidr=self.cidr_mask))
-
-    @property
-    def is_ipv4(self) -> bool:
-        return isinstance(self.interface, IPv4Interface)
-
-    @property
-    def is_ipv6(self) -> bool:
-        return isinstance(self.interface, IPv6Interface)

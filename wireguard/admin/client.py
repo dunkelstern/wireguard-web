@@ -2,7 +2,13 @@ from django.contrib import admin
 from django.http import HttpResponse
 
 from wireguard.config_generators.wgquick import client_config
-from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientNetworks, WireguardServer
+from wireguard.models import (
+    WireguardClient,
+    WireguardClientIP,
+    WireguardClientLocalNetwork,
+    WireguardClientNetworks,
+    WireguardServer,
+)
 
 
 @admin.action(description="Generate wg-quick config")
@@ -30,10 +36,25 @@ class WireguardClientIPsInline(admin.TabularInline):
 
 class WireguardClientNetworksInline(admin.TabularInline):
     model = WireguardClientNetworks
-    fields = (
-        "ip",
-        "cidr_mask",
-    )
+    fields = ("ip",)
+    readonly_fields = ("ip",)
+    extra = 0
+
+    show_change_link = True
+
+    def has_add_permission(self, request, obj):
+        return False
+
+
+class WireguardClientLocalNetworksInline(admin.TabularInline):
+    model = WireguardClientLocalNetwork
+    fields = ("ip", "cidr_mask", "gateway", "public_ip")
+
+    def has_change_permission(self, request, obj) -> bool:
+        return False
+
+    def has_add_permission(self, request, obj):
+        return False
 
 
 @admin.register(WireguardClient)
@@ -51,7 +72,7 @@ class WireguardClientAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("private_key", "public_key", "endpoint", "port", "last_handshake")
     list_display = ("name", "owner", "server", "route_all_traffic", "last_handshake")
-    inlines = (WireguardClientIPsInline, WireguardClientNetworksInline)
+    inlines = (WireguardClientIPsInline, WireguardClientNetworksInline, WireguardClientLocalNetworksInline)
     actions = (generate_wgquick,)
 
     def has_change_permission(self, request, obj=None) -> bool:

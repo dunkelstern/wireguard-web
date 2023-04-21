@@ -1,4 +1,4 @@
-from .client import WireguardClient, WireguardClientIP, WireguardClientNetworks
+from .client import WireguardClient, WireguardClientIP, WireguardClientLocalNetwork, WireguardClientNetworks
 from .invited_users import ServerAccess
 from .server import (
     WireguardServer,
@@ -21,6 +21,7 @@ __all__ = [
     "WireguardClient",
     "WireguardClientIP",
     "WireguardClientNetworks",
+    "WireguardClientLocalNetwork",
     "update_client_config",
     "update_server_config",
 ]

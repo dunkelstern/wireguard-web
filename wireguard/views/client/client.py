@@ -43,6 +43,7 @@ class ClientDetailView(TemplateView):
         client.route_all_traffic = request.POST.get("route_all_traffic", "0") == "1"
         client.is_exitnode = request.POST.get("is_exitnode", "0") == "1"
         client.exit_interface = request.POST.get("exit_interface", "")
+        client.allow_direct_peering = request.POST.get("direct_peering", "0") == "1"
         if client.is_exitnode and not client.exit_interface:
             messages.add_message(
                 request,

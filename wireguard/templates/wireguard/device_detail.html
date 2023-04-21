@@ -68,38 +68,48 @@
         {% else %}
             <input type="hidden" name="route_all_traffic" value="0" />
         {% endif %}
-
-        {% if client.server.allow_client_bridges %}
+        {% if request.user.is_staff %}
             <div class="pure-controls">
-                <label for="checkbox-exitnode" class="pure-checkbox">
-                    <input type="checkbox" id="checkbox-exitnode" name="is_exitnode" value="1" {% if client.is_exitnode %}checked=""{% endif %}/> Bridge local network to VPN
+                <label for="checkbox-direct-peering" class="pure-checkbox">
+                    <input type="checkbox" id="checkbox-direct-peering" name="direct_peering" value="1" {% if client.allow_direct_peering %}checked=""{% endif %}/> Allow other clients to directly connect
                 </label>
             </div>
-            <div class="pure-control-group">
-                <label for="aligned-interface">Exit Interface</label>
-                <input type="text" class="pure-u-1 pure-u-md-1-3" name="exit_interface" id="aligned-interface" placeholder="interface" value="{% if client.exit_interface %}{{ client.exit_interface }}{% endif %}" />
-                <span class="pure-form-message-inline">network interface name</span>
-            </div>
 
-            {% for net in client.networks.all %}
+            {% if client.server.allow_client_bridges %}
+                <div class="pure-controls">
+                    <label for="checkbox-exitnode" class="pure-checkbox">
+                        <input type="checkbox" id="checkbox-exitnode" name="is_exitnode" value="1" {% if client.is_exitnode %}checked=""{% endif %}/> Bridge local network to VPN
+                    </label>
+                </div>
                 <div class="pure-control-group">
-                    <label for="aligned-bridgenet{{ net.id }}">Network</label>
-                    <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_{{ net.id }}" id="aligned-bridgenet{{ net.id }}" placeholder="1.2.3.4/16" value="{{ net.ip }}/{{ net.cidr_mask}}" />
+                    <label for="aligned-interface">Exit Interface</label>
+                    <input type="text" class="pure-u-1 pure-u-md-1-3" name="exit_interface" id="aligned-interface" placeholder="interface" value="{% if client.exit_interface %}{{ client.exit_interface }}{% endif %}" />
+                    <span class="pure-form-message-inline">network interface name</span>
+                </div>
+
+                {% for net in client.networks.all %}
+                    <div class="pure-control-group">
+                        <label for="aligned-bridgenet{{ net.id }}">Network</label>
+                        <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_{{ net.id }}" id="aligned-bridgenet{{ net.id }}" placeholder="1.2.3.4/16" value="{{ net.ip }}/{{ net.cidr_mask}}" />
+                        <span class="pure-form-message-inline">Bridge Network to VPN</span>
+                    </div>
+                {% endfor %}
+                <div class="pure-control-group">
+                    <label for="aligned-bridgenetadd1">Network</label>
+                    <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_new_1" id="aligned-bridgenetadd1" placeholder="1.2.3.4/16" value="{{ bridge_new_1 }}" />
                     <span class="pure-form-message-inline">Bridge Network to VPN</span>
                 </div>
-            {% endfor %}
-            <div class="pure-control-group">
-                <label for="aligned-bridgenetadd1">Network</label>
-                <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_new_1" id="aligned-bridgenetadd1" placeholder="1.2.3.4/16" value="{{ bridge_new_1 }}" />
-                <span class="pure-form-message-inline">Bridge Network to VPN</span>
-            </div>
-            <div class="pure-control-group">
-                <label for="aligned-bridgenetadd2">Network</label>
-                <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_new_2" id="aligned-bridgenetadd2" placeholder="1.2.3.4/16" value="{{ bridge_new_2 }}" />
-                <span class="pure-form-message-inline">Bridge Network to VPN</span>
-            </div>
+                <div class="pure-control-group">
+                    <label for="aligned-bridgenetadd2">Network</label>
+                    <input type="text" class="pure-u-1 pure-u-md-1-3" name="bridge_new_2" id="aligned-bridgenetadd2" placeholder="1.2.3.4/16" value="{{ bridge_new_2 }}" />
+                    <span class="pure-form-message-inline">Bridge Network to VPN</span>
+                </div>
+            {% else %}
+                <input type="hidden" name="is_exitnode" value="0" />
+            {% endif %}
         {% else %}
             <input type="hidden" name="is_exitnode" value="0" />
+            <input type="hidden" name="direct_peering" value="0" />
         {% endif %}
 
         {% if client.id %}
@@ -123,9 +133,18 @@
             {% if client.ips %}
                 {% for ip in client.ips.all %}
                     <div class="pure-control-group">
-                        <label for="aligned-pubkey">IP Address</label>
-                        <input type="text" class="pure-u-1 pure-u-md-1-3" id="aligned-pubkey" value="{{ ip.ip }}" readonly="" />
+                        <label for="aligned-ip{{ forloop.counter0 }}">IP Address</label>
+                        <input type="text" class="pure-u-1 pure-u-md-1-3" id="aligned-ip{{ forloop.counter0 }}" value="{{ ip.ip }}" readonly="" />
                         <span class="pure-form-message-inline">Generated autmatically</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if client.local_networks %}
+                {% for net in client.local_networks.all %}
+                    <div class="pure-control-group">
+                        <label for="aligned-net{{ forloop.counter0 }}">Local Network</label>
+                        <input type="text" class="pure-u-1 pure-u-md-1-3" id="aligned-net{{ forloop.counter0 }}" value="{{ net.ip }}/{{ net.cidr }}" readonly="" />
+                        <span class="pure-form-message-inline">Gateway {{ net.gateway }}</span>
                     </div>
                 {% endfor %}
             {% endif %}
