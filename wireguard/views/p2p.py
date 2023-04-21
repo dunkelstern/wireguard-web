@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from ipaddress import AddressValueError, ip_address
 
 from django.http import JsonResponse
@@ -34,15 +34,10 @@ class PeeringView(View):
 
         # check if we have a client with current handshake and endpoint address
         # that matches this request from address and pubkey
+        remote_ip = request.META.get("HTTP_X_FORWARDED_FOR", request.META["REMOTE_ADDR"])
         try:
-            client = WireguardClient.objects.get(public_key=pubkey)
-            if "HTTP_X_FORWARDED_FOR" not in request.META:
-                if client.endpoint != request.META["REMOTE_ADDR"]:
-                    raise WireguardClient.DoesNotExist()
-            else:
-                if client.endpoint != request.META["HTTP_X_FORWARDED_FOR"]:
-                    raise WireguardClient.DoesNotExist()
-            if client.last_handshake < timezone.now() - timedelta(minutes=10):
+            client = WireguardClient.objects.get(public_key=pubkey, ips__ip=remote_ip)
+            if client.last_handshake < datetime.now() - timedelta(minutes=10):
                 return JsonResponse({"error": "Handshake too old"}, status=400)
             endpoint = client.endpoint
         except WireguardClient.DoesNotExist:
