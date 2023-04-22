@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientLocalNetwork
+from wireguard.models import WireguardClient, WireguardClientLocalNetwork
 
 
 def same_ip(a: str, b: Union[IPv4Address, IPv6Address]) -> bool:
@@ -82,8 +82,7 @@ class PeeringView(View):
         if client.allow_direct_peering:
             clients = (
                 WireguardClient.objects.filter(
-                    local_networks__gateway=gateway,
-                    local_networks__cidr_mask=netmask,
+                    local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
                 )
                 .exclude(pk=client.pk)
                 .exclude(route_all_traffic=True)
@@ -102,8 +101,7 @@ class PeeringView(View):
             # client with endpoint addresses
             clients = (
                 WireguardClient.objects.filter(
-                    local_networks__gateway=gateway,
-                    local_networks__cidr_mask=netmask,
+                    local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
                 )
                 .exclude(pk=client.pk)
                 .exclude(route_all_traffic=True)
