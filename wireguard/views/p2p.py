@@ -86,7 +86,7 @@ class PeeringView(View):
             keys = []
             for client in clients:
                 found = False
-                for client_ip in client.ips.all():
+                for client_ip in client.local_networks.all():
                     if same_ip(client_ip, endpoint):
                         found = True
                 if found:
@@ -106,7 +106,7 @@ class PeeringView(View):
             peers = []
             for peer in clients:
                 found = False
-                for client_ip in client.ips.all():
+                for client_ip in client.local_networks.all():
                     if same_ip(client_ip, endpoint):
                         found = True
                 if not found:
