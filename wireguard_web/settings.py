@@ -30,7 +30,7 @@ DEBUG = os.environ.get("WIREGUARD_WEB_DEBUG", "0") == "1"
 
 parsed_url = urlparse(BASE_URL)
 
-ALLOWED_HOSTS = [parsed_url.hostname, "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     f"http://{parsed_url.hostname}",
     f"https://{parsed_url.hostname}",
