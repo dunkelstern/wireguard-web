@@ -11,12 +11,13 @@ from django.views.generic import View
 from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientLocalNetwork
 
 
-def same_ip(a: WireguardClientIP, b: Union[IPv4Address, IPv6Address]) -> bool:
-    if isinstance(b, IPv4Address) and a.is_ipv4:
-        if a.ip == str(b):
+def same_ip(a: str, b: Union[IPv4Address, IPv6Address]) -> bool:
+    a_ip = ip_address(a)
+    if isinstance(b, IPv4Address) and isinstance(a_ip, IPv4Address):
+        if a == str(b):
             return True
-    elif isinstance(b, IPv6Address) and a.is_ipv6:
-        a_net = ip_interface(f"{a.ip}/64").network
+    elif isinstance(b, IPv6Address) and isinstance(a_ip, IPv6Address):
+        a_net = ip_interface(f"{a}/64").network
         b_net = ip_interface(f"{b}/64").network
         if a_net == b_net:
             return True
@@ -51,7 +52,7 @@ class PeeringView(View):
             client = WireguardClient.objects.get(public_key=pubkey)
             found = False
             for client_ip in client.ips.all():
-                if same_ip(client_ip, remote_ip):
+                if same_ip(client_ip.ip, remote_ip):
                     found = True
             if not found:
                 raise WireguardClient.DoesNotExist
@@ -87,7 +88,7 @@ class PeeringView(View):
             for client in clients:
                 found = False
                 for client_ip in client.local_networks.all():
-                    if same_ip(client_ip, endpoint):
+                    if same_ip(client_ip.public_ip, endpoint):
                         found = True
                 if found:
                     keys.append(client.public_key)
@@ -107,7 +108,7 @@ class PeeringView(View):
             for peer in clients:
                 found = False
                 for client_ip in client.local_networks.all():
-                    if same_ip(client_ip, endpoint):
+                    if same_ip(client_ip.public_ip, endpoint):
                         found = True
                 if not found:
                     continue
