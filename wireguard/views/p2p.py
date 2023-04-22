@@ -17,7 +17,7 @@ def same_ip(a: str, b: Union[IPv4Address, IPv6Address]) -> bool:
         if a == str(b):
             return True
     elif isinstance(b, IPv6Address) and isinstance(a_ip, IPv6Address):
-        a_net = ip_interface(f"{a}/64").network
+        a_net = ip_interface(f"{a_ip}/64").network
         b_net = ip_interface(f"{b}/64").network
         if a_net == b_net:
             return True
