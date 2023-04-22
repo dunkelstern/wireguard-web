@@ -87,15 +87,17 @@ class PeeringView(View):
                 .exclude(pk=client.pk)
                 .exclude(route_all_traffic=True)
             )
-            keys = []
+            peers = []
             for client in clients:
                 found = False
                 for client_ip in client.local_networks.all():
                     if same_ip(client_ip.public_ip, endpoint):
                         found = True
                 if found:
-                    keys.append(client.public_key)
-            return JsonResponse({"peers": [{"pubkey": key} for key in keys]})
+                    peers.append(
+                        {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
+                    )
+            return JsonResponse({"peers": peers})
         else:
             # not p2p target enabled: send all peers in the local network of the
             # client with endpoint addresses
