@@ -73,7 +73,7 @@ class PeeringView(View):
 
         # check if we have a p2p enabled client here, send all known vpn peers
         # to those but keep out the endpoint addresses
-        endpoint = ip_address(endpoint)
+        endpoint = ip_address(endpoint.strip("[]"))
         if client.allow_direct_peering:
             clients = (
                 WireguardClient.objects.filter(
