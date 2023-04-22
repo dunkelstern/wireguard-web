@@ -38,6 +38,10 @@ class PeeringView(View):
 
         # validate request
         try:
+            if isinstance(data, list):
+                if len(data) != 1:
+                    return JsonResponse({"error": "Only one item per request accepted"}, status=400)
+                data = data[0]
             pubkey = data.get("pubkey")
             ip = ip_address(data.get("ip"))
             gateway = str(ip_address(data.get("gateway")))
