@@ -12,7 +12,7 @@ from wireguard.models import WireguardClient, WireguardClientIP, WireguardClient
 
 
 def same_ip(a: str, b: Union[IPv4Address, IPv6Address]) -> bool:
-    a_ip = ip_address(a)
+    a_ip = ip_address(a.strip("[]"))
     if isinstance(b, IPv4Address) and isinstance(a_ip, IPv4Address):
         if a == str(b):
             return True
