@@ -1,14 +1,26 @@
 import json
 from datetime import datetime, timedelta
 from ipaddress import IPv4Address, IPv6Address, ip_address, ip_interface
+from typing import Union
 
 from django.http import JsonResponse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from wireguard.models import WireguardClient, WireguardClientLocalNetwork
+from wireguard.models import WireguardClient, WireguardClientIP, WireguardClientLocalNetwork
+
+
+def same_ip(a: WireguardClientIP, b: Union[IPv4Address, IPv6Address]) -> bool:
+    if isinstance(b, IPv4Address) and a.is_ipv4:
+        if a.ip == str(b):
+            return True
+    elif isinstance(b, IPv6Address) and a.is_ipv6:
+        a_net = ip_interface(f"{a.ip}/64").network
+        b_net = ip_interface(f"{b}/64").network
+        if a_net == b_net:
+            return True
+    return False
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -39,14 +51,8 @@ class PeeringView(View):
             client = WireguardClient.objects.get(public_key=pubkey)
             found = False
             for client_ip in client.ips.all():
-                if isinstance(remote_ip, IPv4Address) and client_ip.is_ipv4:
-                    if client_ip.ip == str(remote_ip):
-                        found = True
-                elif isinstance(remote_ip, IPv6Address) and client_ip.is_ipv6:
-                    remote_net = ip_interface(f"{remote_ip}/64").network
-                    client_net = ip_interface(f"{client_ip.ip}/64").network
-                    if remote_net == client_net:
-                        found = True
+                if same_ip(client_ip, remote_ip):
+                    found = True
             if not found:
                 raise WireguardClient.DoesNotExist
             if client.last_handshake < datetime.now() - timedelta(minutes=10):
@@ -68,23 +74,28 @@ class PeeringView(View):
         # check if we have a p2p enabled client here, send all known vpn peers
         # to those but keep out the endpoint addresses
         if client.allow_direct_peering:
-            keys = (
+            clients = (
                 WireguardClient.objects.filter(
-                    local_networks__public_ip=endpoint,
                     local_networks__gateway=gateway,
                     local_networks__cidr_mask=netmask,
                 )
                 .exclude(pk=client.pk)
                 .exclude(route_all_traffic=True)
-                .values_list("public_key", flat=True)
             )
+            keys = []
+            for client in clients:
+                found = False
+                for client_ip in client.ips.all():
+                    if same_ip(client_ip, endpoint):
+                        found = True
+                if found:
+                    keys.append(client.public_key)
             return JsonResponse({"peers": [{"pubkey": key} for key in keys]})
         else:
             # not p2p target enabled: send all peers in the local network of the
             # client with endpoint addresses
             clients = (
                 WireguardClient.objects.filter(
-                    local_networks__public_ip=endpoint,
                     local_networks__gateway=gateway,
                     local_networks__cidr_mask=netmask,
                 )
@@ -93,6 +104,13 @@ class PeeringView(View):
             )
             peers = []
             for peer in clients:
+                found = False
+                for client_ip in client.ips.all():
+                    if same_ip(client_ip, endpoint):
+                        found = True
+                if not found:
+                    continue
+
                 p2p_endpoint = None
                 for net in peer.local_networks.all():
                     if net.is_ipv4:
