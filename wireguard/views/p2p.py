@@ -116,7 +116,7 @@ class PeeringView(View):
                             net = peer.local_networks.first()
                             if net is None:
                                 continue
-                            if net.interface.ip_address not in client_ip.interface.network:
+                            if net.interface.ip not in client_ip.interface.network:
                                 continue
                             p2p_endpoint = net.ip
 
