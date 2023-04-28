@@ -103,9 +103,9 @@ class PeeringView(View):
                         if same_ip(client_ip.public_ip, endpoint):
                             found = True
                     if found:
-                        peers.append(
-                            {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
-                        )
+                        p = {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
+                        if p not in peers:
+                            peers.append(p)
 
             return JsonResponse({"peers": peers})
         else:
@@ -140,12 +140,13 @@ class PeeringView(View):
                     if not p2p_endpoint:
                         p2p_endpoint = peer.local_networks.first().ip
 
-                    peers.append(
-                        {
+                    p = {
                             "pubkey": peer.public_key,
                             "endpoint": p2p_endpoint,
                             "port": peer.port,
                             "ip": list(peer.ips.all().values_list("ip", flat=True)),
-                        }
-                    )
+                    }
+
+                    if p not in peers:
+                        peers.append(p)
             return JsonResponse({"peers": peers})
