@@ -145,7 +145,10 @@ class PeeringView(View):
                         if net.is_ipv4:
                             p2p_endpoint = net.ip
                     if not p2p_endpoint:
-                        p2p_endpoint = peer.local_networks.first().ip
+                        net = peer.local_networks.first()
+                        if net is None:
+                            continue
+                        p2p_endpoint = net.ip
 
                     p = {
                         "pubkey": peer.public_key,
