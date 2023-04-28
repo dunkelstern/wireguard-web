@@ -101,16 +101,36 @@ class PeeringView(View):
                     .exclude(pk=client.pk)
                     .exclude(route_all_traffic=True)
                 )
-                for local_client in clients:
+                for peer in clients:
                     found = False
-                    for client_ip in local_client.local_networks.all():
+                    p2p_endpoint = None
+                    for client_ip in peer.local_networks.all():
                         if same_ip(client_ip.public_ip, endpoint):
                             found = True
+
+                        if not p2p_endpoint:
+                            for net in peer.ips.all():
+                                if net.is_ipv4 and client_ip.interface.contains(net):
+                                    p2p_endpoint = net.ip
+                        if not p2p_endpoint:
+                            net = peer.local_networks.first()
+                            if net is None:
+                                continue
+                            if not client_ip.interface.contains(net):
+                                continue
+                            p2p_endpoint = net.ip
+
                     if found:
                         p = {
-                            "pubkey": local_client.public_key,
-                            "ip": list(local_client.ips.all().values_list("ip", flat=True)),
+                            "pubkey": peer.public_key,
+                            "ip": list(peer.ips.all().values_list("ip", flat=True)),
                         }
+                        if p2p_endpoint is not None:
+                            p.update({
+                                "endpoint": p2p_endpoint,
+                                "port": peer.port,
+                            })
+
                         if p not in peers:
                             peers.append(p)
 
