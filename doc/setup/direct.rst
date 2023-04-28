@@ -122,6 +122,7 @@ Create the database and a first user:
 
     python manage.py migrate
     python manage.py createsuperuser
+    python manage.py create_groups
 
 
 .. index:: sudo, sudoers

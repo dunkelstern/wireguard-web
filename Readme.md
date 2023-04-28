@@ -46,6 +46,7 @@ Before releasing 1.0 we want the following to work:
    ```bash
    python manage.py migrate
    python manage.py createsuperuser
+   python manage.py create_groups
    ```
 
 8. Install Systemd services: `./setup_wireguard_web.sh`
