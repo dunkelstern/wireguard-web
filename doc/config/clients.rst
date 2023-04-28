@@ -57,7 +57,7 @@ will be visible to the users on the UI only if the server has the corresponding
 feature enabled.
 
 
-.. index:: dns
+.. index:: DNS
 
 Using VPN DNS services
 ----------------------

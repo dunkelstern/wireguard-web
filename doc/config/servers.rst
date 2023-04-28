@@ -69,7 +69,7 @@ you can do with your VPN.
   :alt: Screenshot of Django Administration Page for Server advanced settings
 
 
-.. index:: dns, dns-domain
+.. index:: DNS, DNS-Domain
 
 DNS
 ---
