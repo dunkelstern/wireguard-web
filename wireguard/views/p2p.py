@@ -97,13 +97,16 @@ class PeeringView(View):
                     .exclude(pk=client.pk)
                     .exclude(route_all_traffic=True)
                 )
-                for client in clients:
+                for local_client in clients:
                     found = False
-                    for client_ip in client.local_networks.all():
+                    for client_ip in local_client.local_networks.all():
                         if same_ip(client_ip.public_ip, endpoint):
                             found = True
                     if found:
-                        p = {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
+                        p = {
+                            "pubkey": local_client.public_key,
+                            "ip": list(local_client.ips.all().values_list("ip", flat=True)),
+                        }
                         if p not in peers:
                             peers.append(p)
 
@@ -141,10 +144,10 @@ class PeeringView(View):
                         p2p_endpoint = peer.local_networks.first().ip
 
                     p = {
-                            "pubkey": peer.public_key,
-                            "endpoint": p2p_endpoint,
-                            "port": peer.port,
-                            "ip": list(peer.ips.all().values_list("ip", flat=True)),
+                        "pubkey": peer.public_key,
+                        "endpoint": p2p_endpoint,
+                        "port": peer.port,
+                        "ip": list(peer.ips.all().values_list("ip", flat=True)),
                     }
 
                     if p not in peers:
