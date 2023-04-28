@@ -68,13 +68,13 @@ class PeeringView(View):
         # client = WireguardClient.objects.get(pk=int(pubkey))
         # endpoint = "10.10.10.0"
 
+        client.local_networks.all().delete()
         for item in data:
             ip = ip_address(item.get("ip"))
             gateway = str(ip_address(item.get("gateway")))
             netmask = item.get("netmask")
 
             # update local networks of the client
-            client.local_networks.all().delete()
             WireguardClientLocalNetwork.objects.create(
                 public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, ip=str(ip)
             )
