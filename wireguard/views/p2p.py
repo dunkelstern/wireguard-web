@@ -39,13 +39,11 @@ class PeeringView(View):
         # validate request
         try:
             if isinstance(data, list):
-                if len(data) != 1:
-                    return JsonResponse({"error": "Only one item per request accepted"}, status=400)
-                data = data[0]
-            pubkey = data.get("pubkey")
-            ip = ip_address(data.get("ip"))
-            gateway = str(ip_address(data.get("gateway")))
-            netmask = data.get("netmask")
+                if len(data) < 1:
+                    return JsonResponse({"error": "Empty request"}, status=400)
+            else:
+                data = [data]
+            pubkey = data[0].get("pubkey")
         except (AttributeError, ValueError):
             return JsonResponse({"error": "Missing field, need 'pubkey', 'ip', 'netmask', 'gateway'"}, status=400)
 
@@ -70,66 +68,84 @@ class PeeringView(View):
         # client = WireguardClient.objects.get(pk=int(pubkey))
         # endpoint = "10.10.10.0"
 
-        # update local networks of the client
-        client.local_networks.all().exclude(public_ip=endpoint).delete()
-        WireguardClientLocalNetwork.objects.update_or_create(
-            public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, defaults={"ip": str(ip)}
-        )
+        for item in data:
+            ip = ip_address(item.get("ip"))
+            gateway = str(ip_address(item.get("gateway")))
+            netmask = item.get("netmask")
+
+            # update local networks of the client
+            client.local_networks.all().exclude(public_ip=endpoint).delete()
+            WireguardClientLocalNetwork.objects.update_or_create(
+                public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, defaults={"ip": str(ip)}
+            )
 
         # check if we have a p2p enabled client here, send all known vpn peers
         # to those but keep out the endpoint addresses
         endpoint = ip_address(endpoint.strip("[]"))
         if client.allow_direct_peering:
-            clients = (
-                WireguardClient.objects.filter(
-                    local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
-                )
-                .exclude(pk=client.pk)
-                .exclude(route_all_traffic=True)
-            )
             peers = []
-            for client in clients:
-                found = False
-                for client_ip in client.local_networks.all():
-                    if same_ip(client_ip.public_ip, endpoint):
-                        found = True
-                if found:
-                    peers.append(
-                        {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
+
+            for item in data:
+                ip = ip_address(item.get("ip"))
+                gateway = str(ip_address(item.get("gateway")))
+                netmask = item.get("netmask")
+
+                clients = (
+                    WireguardClient.objects.filter(
+                        local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
                     )
+                    .exclude(pk=client.pk)
+                    .exclude(route_all_traffic=True)
+                )
+                for client in clients:
+                    found = False
+                    for client_ip in client.local_networks.all():
+                        if same_ip(client_ip.public_ip, endpoint):
+                            found = True
+                    if found:
+                        peers.append(
+                            {"pubkey": client.public_key, "ip": list(client.ips.all().values_list("ip", flat=True))}
+                        )
+
             return JsonResponse({"peers": peers})
         else:
             # not p2p target enabled: send all peers in the local network of the
             # client with endpoint addresses
-            clients = (
-                WireguardClient.objects.filter(
-                    local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
-                )
-                .exclude(pk=client.pk)
-                .exclude(route_all_traffic=True)
-            )
             peers = []
-            for peer in clients:
-                found = False
-                for client_ip in client.local_networks.all():
-                    if same_ip(client_ip.public_ip, endpoint):
-                        found = True
-                if not found:
-                    continue
 
-                p2p_endpoint = None
-                for net in peer.local_networks.all():
-                    if net.is_ipv4:
-                        p2p_endpoint = net.ip
-                if not p2p_endpoint:
-                    p2p_endpoint = peer.local_networks.first().ip
+            for item in data:
+                ip = ip_address(item.get("ip"))
+                gateway = str(ip_address(item.get("gateway")))
+                netmask = item.get("netmask")
 
-                peers.append(
-                    {
-                        "pubkey": peer.public_key,
-                        "endpoint": p2p_endpoint,
-                        "port": peer.port,
-                        "ip": list(peer.ips.all().values_list("ip", flat=True)),
-                    }
+                clients = (
+                    WireguardClient.objects.filter(
+                        local_networks__gateway=gateway, local_networks__cidr_mask=netmask, server=client.server
+                    )
+                    .exclude(pk=client.pk)
+                    .exclude(route_all_traffic=True)
                 )
+                for peer in clients:
+                    found = False
+                    for client_ip in client.local_networks.all():
+                        if same_ip(client_ip.public_ip, endpoint):
+                            found = True
+                    if not found:
+                        continue
+
+                    p2p_endpoint = None
+                    for net in peer.local_networks.all():
+                        if net.is_ipv4:
+                            p2p_endpoint = net.ip
+                    if not p2p_endpoint:
+                        p2p_endpoint = peer.local_networks.first().ip
+
+                    peers.append(
+                        {
+                            "pubkey": peer.public_key,
+                            "endpoint": p2p_endpoint,
+                            "port": peer.port,
+                            "ip": list(peer.ips.all().values_list("ip", flat=True)),
+                        }
+                    )
             return JsonResponse({"peers": peers})
