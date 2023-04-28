@@ -3,7 +3,9 @@
 To make it easier to judge if this tool is for you here's a screenshot of the
 device administration interface. See `doc` directory for more screenshots.
 
-![Device detail UI](doc/device_detail.png)
+![Device detail UI](doc/images/device_detail.png)
+
+For detailed documentation visit the [User documentation](https://dunkelstern.github.io/wireguard-web/index.html)
 
 ## Roadmap
 
@@ -27,7 +29,7 @@ Before releasing 1.0 we want the following to work:
 1. Wireguard compiled into Linux kernel (should be the case for any modern distro)
 2. Installed wireguard tools (we need the `wg-quick` and `wg` tools here)
 3. SystemD (sorry non-systemd users, I don't want to debug any other solutions)
-4. Python > 3.9
+4. Python > 3.9 with `pip` and `virtualenv` support (be aware Debian/Ubuntu users!)
 5. `sudo`
 6. `dnsmasq` if you want to use the routed DNS functionality
 
@@ -149,31 +151,3 @@ To run the Django service on boot you can use the example systemd service file i
 `/systemd`. Just copy it over to `/etc/systemd/system`, edit it to your liking,
 reload the systemd daemon (`systemctl daemon-reload`) and enable it as a service
 (`systemctl enable --now wireguard-web-ui`).
-
-The following systemd-units will be deployed by running the `setup_wireguard_web.sh`
-script:
-
-### wireguard-web-wg-quick@.service
-
-This is a parametrised wg-quick launcher. The parameter after the `@` symbol references
-the wireguard interface name and expects a config file in `/etc/wireguard-web` with the
-same name and a `.conf`-suffix.
-
-To enable, disable or reload a server run for example `systemctl reload wireguard-web-wg-quick@wg0`
-to reload the service for the `wg0` interface.
-
-### wireguard-web-dnsmasq@.service
-
-This is a parametrised `dnsmasq` launcher. It is used by the system if you enable
-local DNS for a wireguard server instance and will be used to resolve VPN internal
-names and will forward to the locally configured DNS resolvers in `/etc/resolv.conf`
-
-### wireguard-web-config.service
-
-This is a service that is triggered whenever a config file in the staging area
-changes to deploy the needed configuration and reload services.
-
-### wireguard-web-config.path
-
-This is a trigger to run the `wireguard-web-config.service` when a config file
-in the staging directory changes.
