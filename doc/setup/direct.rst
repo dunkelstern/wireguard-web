@@ -67,7 +67,7 @@ of the virtualenv to the shell profile, for example:
 
     [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-    source $HOME/,virtualenvs/bin/activate
+    source $HOME/.virtualenvs/bin/activate
 
 
 .. index:: setup, config, configuration

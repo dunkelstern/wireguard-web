@@ -13,6 +13,7 @@ Welcome to the WireGuard-Web documentation!
    setup/install.rst
    config/servers.rst
    config/clients.rst
+   config/users.rst
 
 
 Indices and tables
