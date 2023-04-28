@@ -83,8 +83,9 @@ Before you can run the service we need some configuration to be done.
 Environment config
 ------------------
 
-To configure the application the only file you have to touch is the `.env` file
-in the source directory. To get a template for this run ``cp .env.sample .env``.
+To configure the application the only file you have to touch is the ``.env``
+file in the source directory. To get a template for this
+run ``cp .env.sample .env``.
 
 Description of configuration options:
 

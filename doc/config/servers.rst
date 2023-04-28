@@ -1,3 +1,5 @@
+.. index:: server, endpoint
+    
 *********************************
 VPN Server/Endpoint configuration
 *********************************
@@ -23,8 +25,14 @@ implemented for clients/devices currently.
 You can access the Django admin site by opening the URL ``/admin/`` on your
 domain. The superuser you created when setting the service up.
 
+.. index:: server-name, network-interface, hostname, port, enabled
+
 Basics
 ======
+
+.. image:: images/server_basic.png
+  :width: 600
+  :alt: Screenshot of Django Administration Page for Server basic settings
 
 Currently there are 4 mandatory basic settings that have to be filled to create
 a new VPN endpoint:
@@ -47,6 +55,7 @@ a new VPN endpoint:
   will be removed from the active configuration on save. Clients will not be
   able to see or connect to this Endpoint.
 
+.. index:: advanced, server
 
 Advanced Settings
 =================
@@ -54,6 +63,13 @@ Advanced Settings
 There are some advanced settings here that might interest you. The VPN endpoint
 will run witout turning any of this on but you will be severely limited on what
 you can do with your VPN.
+
+.. image:: images/server_advanced.png
+  :width: 600
+  :alt: Screenshot of Django Administration Page for Server advanced settings
+
+
+.. index:: dns, dns-domain
 
 DNS
 ---
@@ -68,6 +84,9 @@ You'll have to set *DNS Domain* to a domain name under which to register the
 VPN clients. Please use something that has nothing other on it, because it might
 get hidden by clients that register the same name. It is probably a good idea to
 use a subdomain like ``vpn.`` for all clients to be registered on.
+
+
+.. index:: exit-node, nat, bridge
 
 NAT/Exit nodes
 --------------
@@ -88,6 +107,8 @@ interface to route packets that cannot be routed locally. It is possible to
 probably the interface on your server that has the default gateway or a
 configured IPv6 nexthop.
 
+.. index:: full-vpn, all traffic
+
 Allowing full VPN
 -----------------
 
@@ -96,6 +117,9 @@ all traffic through the VPN. This is probably useful for mobile devices like
 phones or tablets that should be secured on open networks. Be aware that
 communication with other devices on the same local network might break for
 clients enabling this setting without further configuration.
+
+
+.. index:: client-communication
 
 Client communication
 --------------------
@@ -113,6 +137,9 @@ yourself currently. This might get fixed in the future but will mean that the
 service has to re-configure ip tables or firewalls and this could be more
 complex than thought.
 
+
+.. index:: nat, bridge
+
 Network bridging
 ----------------
 
@@ -125,6 +152,9 @@ enable new bridges as they will need the routing information.
 
 Only Staff or Admin users may configure their clients to provide bridges.
 
+
+.. index:: peering, p2p
+
 Peer 2 peer communication
 -------------------------
 
@@ -133,6 +163,9 @@ are in the same local network instead of bouncing traffic through the server.
 
 This will need a peering client application on the clients that participate in
 this and will be described in :ref:`p2p`
+
+
+.. index:: keepalive, timeout, nat, connection-tracking
 
 Enforced Keepalive
 ------------------
@@ -147,6 +180,9 @@ services for others to access so they do not time out. If enabled the device in
 question might use more energy as it cannot turn of its modem or fail to go to a
 power saving mode and thus drain their battery faster.
 
+
+.. index:: fwmark, firewall
+
 Firewall marking
 ----------------
 
@@ -154,8 +190,15 @@ If you want to firewall traffic that stems from this tunnel you can have it
 marked to be routed differently than other traffic. If set to ``0`` no marking
 is happening.
 
+
+.. index:: network, routes, ip, ip-address
+
 Network settings
 ================
+
+.. image:: images/server_networks.png
+  :width: 600
+  :alt: Screenshot of Django Administration Page for Server network settings
 
 This defines the networks the VPN endpoint provides or routes to. You'll have
 two distinct sets of networks here:
@@ -168,14 +211,29 @@ two distinct sets of networks here:
    on the address field and clients will get a route to this network but no IP
    entry.
 
+
+.. index:: DNS, override
+
 DNS Overrides
 =============
+
+.. image:: images/server_dns_overrides.png
+  :width: 600
+  :alt: Screenshot of Django Administration Page for Server DNS settings
 
 DNS overrides will be written to the ``dnsmasq`` configuration when you enable
 the DNS functionality in the *Advanced* section. They work as you would expect.
 
+
+.. index:: self-registration, email-domain
+
 Self registration
 =================
+
+.. image:: images/server_self_registrations.png
+  :width: 600
+  :alt: Screenshot of Django Administration Page for Server self registration
+   settings
 
 If you set one or multiple domain names here, this will enable users with an
 e-mail address on this domain to self-register for this server on the web UI.
