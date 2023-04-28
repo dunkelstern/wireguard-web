@@ -36,14 +36,8 @@ class WireguardClientIPsInline(admin.TabularInline):
 
 class WireguardClientNetworksInline(admin.TabularInline):
     model = WireguardClientNetworks
-    fields = ("ip",)
-    readonly_fields = ("ip",)
+    fields = ("ip", "cidr_mask")
     extra = 0
-
-    show_change_link = True
-
-    def has_add_permission(self, request, obj):
-        return False
 
 
 class WireguardClientLocalNetworksInline(admin.TabularInline):
