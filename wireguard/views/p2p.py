@@ -81,7 +81,7 @@ class PeeringView(View):
 
             # update local networks of the client
             WireguardClientLocalNetwork.objects.create(
-                public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, ip=str(ip)
+                public_ip=str(endpoint), gateway=gateway, cidr_mask=netmask, client=client, ip=str(ip)
             )
 
         # check if we have a p2p enabled client here, send all known vpn peers
