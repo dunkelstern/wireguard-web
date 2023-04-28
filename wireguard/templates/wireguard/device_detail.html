@@ -152,7 +152,7 @@
 
             <div class="pure-control-group">
                 <label for="aligned-handshake">Last Handshake</label>
-                <input type="text" class="pure-u-1 pure-u-md-1-3 {% conditionaltime client.last_handshake "10 minutes ago" "stale" "current" %}" id="aligned-handshake" value="{% if client.last_handshake %}{{ client.last_handshake | relativetime }}{% else %}<span class="material-icons">close</span>{% endif %}" readonly="" />
+                <input type="text" class="pure-u-1 pure-u-md-1-3 {% conditionaltime client.last_handshake "10 minutes ago" "stale" "current" %}" id="aligned-handshake" value="{% if client.last_handshake %}{{ client.last_handshake | relativetime }}{% else %}-{% endif %}" readonly="" />
             </div>
 
             <div class="pure-control-group">
