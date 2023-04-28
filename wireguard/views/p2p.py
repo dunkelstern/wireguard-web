@@ -74,9 +74,9 @@ class PeeringView(View):
             netmask = item.get("netmask")
 
             # update local networks of the client
-            client.local_networks.all().exclude(public_ip=endpoint).delete()
-            WireguardClientLocalNetwork.objects.update_or_create(
-                public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, defaults={"ip": str(ip)}
+            client.local_networks.all().delete()
+            WireguardClientLocalNetwork.objects.create(
+                public_ip=endpoint, gateway=gateway, cidr_mask=netmask, client=client, ip=str(ip)
             )
 
         # check if we have a p2p enabled client here, send all known vpn peers
