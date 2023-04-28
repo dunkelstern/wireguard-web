@@ -144,8 +144,8 @@ Bridged Networks
   :alt: Screenshot of Django Administration Page for Client bridge settings
 
 This is only enabled when the server allows client bridges. When it does allow
-bridges this works the same as the server variant. The IP is the IP of the
-client in the network and other clients get routes to that network.
+bridges this works the same as the server variant. This has to be a network
+address for the other clients, they will get routes to that network.
 
 Be aware that other clients need to re-download their configuration when
 something is changed here!
