@@ -110,13 +110,13 @@ class PeeringView(View):
 
                         if not p2p_endpoint:
                             for net in peer.ips.all():
-                                if net.is_ipv4 and net in client_ip.interface.network:
+                                if net.is_ipv4 and net.ip in client_ip.interface.network:
                                     p2p_endpoint = net.ip
                         if not p2p_endpoint:
                             net = peer.local_networks.first()
                             if net is None:
                                 continue
-                            if net not in client_ip.interface.network:
+                            if net.ip not in client_ip.interface.network:
                                 continue
                             p2p_endpoint = net.ip
 
