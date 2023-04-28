@@ -110,13 +110,13 @@ class PeeringView(View):
 
                         if not p2p_endpoint:
                             for net in peer.ips.all():
-                                if net.is_ipv4 and client_ip.interface.contains(net):
+                                if net.is_ipv4 and net in client_ip.interface.network:
                                     p2p_endpoint = net.ip
                         if not p2p_endpoint:
                             net = peer.local_networks.first()
                             if net is None:
                                 continue
-                            if not client_ip.interface.contains(net):
+                            if net not in client_ip.interface.network:
                                 continue
                             p2p_endpoint = net.ip
 
@@ -126,10 +126,12 @@ class PeeringView(View):
                             "ip": list(peer.ips.all().values_list("ip", flat=True)),
                         }
                         if p2p_endpoint is not None:
-                            p.update({
-                                "endpoint": p2p_endpoint,
-                                "port": peer.port,
-                            })
+                            p.update(
+                                {
+                                    "endpoint": p2p_endpoint,
+                                    "port": peer.port,
+                                }
+                            )
 
                         if p not in peers:
                             peers.append(p)
