@@ -68,11 +68,16 @@ class PeeringView(View):
         # client = WireguardClient.objects.get(pk=int(pubkey))
         # endpoint = "10.10.10.0"
 
+        endpoint = ip_address(endpoint.strip("[]"))
+
         client.local_networks.all().delete()
         for item in data:
             ip = ip_address(item.get("ip"))
             gateway = str(ip_address(item.get("gateway")))
             netmask = item.get("netmask")
+
+            if endpoint == ip:
+                continue
 
             # update local networks of the client
             WireguardClientLocalNetwork.objects.create(
@@ -81,7 +86,6 @@ class PeeringView(View):
 
         # check if we have a p2p enabled client here, send all known vpn peers
         # to those but keep out the endpoint addresses
-        endpoint = ip_address(endpoint.strip("[]"))
         if client.allow_direct_peering:
             peers = []
 
