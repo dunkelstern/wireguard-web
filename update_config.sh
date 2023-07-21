@@ -52,7 +52,7 @@ done
 disable=$(
     (
         cat "${WIREGUARD_STAGING_CONFIG_DIRECTORY}"/interfaces.conf
-        systemctl list-units|grep wireguard-web-wg-quick|sed -e 's/\s*wireguard-web-wg-quick@\([^.]*\).service.*/\1/'
+        LC_ALL=C systemctl list-units|grep wireguard-web-wg-quick|sed -e '/.slice/d' -e 's/\**\s*wireguard-web-wg-quick@\([^.]*\).service.*/\1/'
     ) | sort | uniq -u
 )
 echo "Disabling services not in use anymore..."
