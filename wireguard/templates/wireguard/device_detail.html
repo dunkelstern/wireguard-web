@@ -70,11 +70,13 @@
             <input type="hidden" name="route_all_traffic" value="0" />
         {% endif %}
         {% if request.user.is_staff %}
+            {% if client.server.allow_direct_peering %}
             <div class="pure-controls">
                 <label for="checkbox-direct-peering" class="pure-checkbox">
                     <input type="checkbox" id="checkbox-direct-peering" name="direct_peering" value="1" {% if client.allow_direct_peering %}checked=""{% endif %}/> Allow other clients to directly connect
                 </label>
             </div>
+            {% endif %}
 
             {% if client.server.allow_client_bridges %}
                 <div class="pure-controls">
@@ -229,4 +231,3 @@
 
 
 {% endblock %}
-
