@@ -11,7 +11,9 @@ For detailed documentation visit the [User documentation](https://dunkelstern.gi
 
 - `0.6.0`:
   - Switch from `pipenv` to `poetry` for dependency management
-
+  - More robust parsing of systemctl output on Ubuntu
+  - Dark mode UI
+  - Better UI for mobile devices
 
 ## Roadmap
 
