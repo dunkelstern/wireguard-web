@@ -1,13 +1,10 @@
-[build-system]
-requires = ["flit_core >=3.7,<4"]
-build-backend = "flit_core.buildapi"
 
 [project]
 name = "wireguard-web"
 description = "Webinterface to configure a wireguard server"
 readme = "README.md"
 keywords = ["django", "wireguard"]
-license = {text = "MIT"}
+license = {text = "AGPL"}
 classifiers = [
     "License :: OSI Approved :: AGPL License",
     "Framework :: Django",
@@ -52,3 +49,30 @@ profile = "black"
 line_length = 120
 known_first_party = "wireguard-web"
 lines_after_imports = 2
+
+[tool.poetry]
+name = "wireguard-web"
+version = "0.6.0"
+description = "Webinterface to configure a wireguard server"
+authors = ["Johannes Schriewer <hallo@dunkelstern.de>"]
+license = "AGPL"
+readme = "Readme.md"
+packages = [{include = "wireguard_web"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = ">=4.1"
+qrcode = ">=7.4"
+pillow = ">=9.5"
+whitenoise = ">=6.4"
+humanize = ">=4.6"
+dateparser = ">=1.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+isort = "*"
+flake8 = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -40,7 +40,7 @@ installed as well as some other requirements:
 8. ``certbot`` for Letsencrypt certificates.
 
 
-.. index:: python, venv, virtualenv, pip, pipenv
+.. index:: python, venv, virtualenv, pip, poetry
 
 Python environment
 ==================
@@ -52,8 +52,8 @@ service.
 1. Unpack the release zip/tar.gz and switch to unpacked directory
 2. Create python venv: ``python -m venv ~/.virtualenvs/wireguard_web``
 3. Activate venv: ``source ~/.virtualenvs/wireguard_web``
-4. Install dependency manager: ``pip install pipenv``
-5. Install dependencies: ``pipenv sync``
+4. Install dependency manager: ``pip install poetry``
+5. Install dependencies: ``poetry install``
 
 Ideally you'll create a new user for this service to run and add the activation
 of the virtualenv to the shell profile, for example:
@@ -136,7 +136,7 @@ need to allow some commands to be run via sudo without a password:
 .. code-block::
    :linenos:
    :caption: /etc/sudoers.d/wireguard-web
-   
+
     wireguard-web ALL=(ALL) NOPASSWD: /usr/bin/wg show all endpoints
     wireguard-web ALL=(ALL) NOPASSWD: /usr/bin/wg show all latest-handshakes
 
@@ -392,8 +392,7 @@ To configure ``certbot`` to manage your HTTPS certificates do the following:
 3. Configure your web-server like above
 4. Run ``certbot`` without any parameters and follow the interactive prompt
    to enable HTTPS support for your domain
-5. Install the auto-renewal-service: 
+5. Install the auto-renewal-service:
    ``systemctl daemon-reload && systemctl enable --now certbot.timer``
 
 Voila, your system will now automatically maintain it's certificates.
-

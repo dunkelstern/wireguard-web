@@ -7,6 +7,12 @@ device administration interface. See `doc` directory for more screenshots.
 
 For detailed documentation visit the [User documentation](https://dunkelstern.github.io/wireguard-web/index.html)
 
+## Changelog
+
+- `0.6.0`:
+  - Switch from `pipenv` to `poetry` for dependency management
+
+
 ## Roadmap
 
 Before releasing 1.0 we want the following to work:
@@ -38,8 +44,8 @@ Before releasing 1.0 we want the following to work:
 1. Unpack release and switch to unpacked directory
 2. Create python venv: `python -m venv ~/.virtualenvs/wireguard_web`
 3. Activate venv: `source ~/.virtualenvs/wireguard_web`
-4. Install dependency manager: `pip install pipenv`
-5. Install dependencies: `pipenv sync`
+4. Install dependency manager: `pip install poetry`
+5. Install dependencies: `poetry install`
 6. Setup your `.env` file, for a sample see `.env.example`
 7. Create the database and a first user:
 
