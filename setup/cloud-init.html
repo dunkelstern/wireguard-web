@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud-Init &mdash; WireGuard-Web  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            WireGuard-Web
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/servers.html">VPN Server/Endpoint configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/clients.html">Client configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/users.html">User management</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WireGuard-Web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cloud-Init</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/setup/cloud-init.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cloud-init">
+<h1>Cloud-Init<a class="headerlink" href="#cloud-init" title="Link to this heading"></a></h1>
+<p>Following is an example <code class="docutils literal notranslate"><span class="pre">cloud-init</span></code> file for a debian host:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">cloud-init.txt</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>     <span class="c1">#cloud-config</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span>     <span class="o">---</span>
+<span class="linenos"> 4</span>     <span class="n">package_update</span><span class="p">:</span> <span class="n">true</span>
+<span class="linenos"> 5</span>     <span class="n">package_upgrade</span><span class="p">:</span> <span class="n">true</span>
+<span class="linenos"> 6</span>     <span class="n">packages</span><span class="p">:</span>
+<span class="linenos"> 7</span>     <span class="o">-</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">tools</span>
+<span class="linenos"> 8</span>     <span class="o">-</span> <span class="n">dnsmasq</span>
+<span class="linenos"> 9</span>     <span class="o">-</span> <span class="n">nginx</span>
+<span class="linenos">10</span>     <span class="o">-</span> <span class="n">python3</span>
+<span class="linenos">11</span>     <span class="o">-</span> <span class="n">python3</span><span class="o">-</span><span class="n">venv</span>
+<span class="linenos">12</span>     <span class="o">-</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+<span class="linenos">13</span>     <span class="o">-</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span>
+<span class="linenos">14</span>     <span class="o">-</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">nginx</span>
+<span class="linenos">15</span>     <span class="o">-</span> <span class="n">git</span>
+<span class="linenos">16</span>     <span class="o">-</span> <span class="n">vim</span><span class="o">-</span><span class="n">nox</span>
+<span class="linenos">17</span>     <span class="o">-</span> <span class="n">dnsutils</span>
+<span class="linenos">18</span>     <span class="o">-</span> <span class="n">wget</span>
+<span class="linenos">19</span>     <span class="n">users</span><span class="p">:</span>
+<span class="linenos">20</span>     <span class="o">-</span>   <span class="n">groups</span><span class="p">:</span> <span class="n">users</span>
+<span class="linenos">21</span>         <span class="n">name</span><span class="p">:</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">web</span>
+<span class="linenos">22</span>         <span class="n">shell</span><span class="p">:</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span>
+<span class="linenos">23</span>         <span class="n">sudo</span><span class="p">:</span>
+<span class="linenos">24</span>         <span class="o">-</span>   <span class="n">ALL</span><span class="o">=</span><span class="p">(</span><span class="n">ALL</span><span class="p">)</span> <span class="n">NOPASSWD</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">wg</span> <span class="n">show</span> <span class="nb">all</span> <span class="n">endpoints</span>
+<span class="linenos">25</span>         <span class="o">-</span>   <span class="n">ALL</span><span class="o">=</span><span class="p">(</span><span class="n">ALL</span><span class="p">)</span> <span class="n">NOPASSWD</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">wg</span> <span class="n">show</span> <span class="nb">all</span> <span class="n">latest</span><span class="o">-</span><span class="n">handshakes</span>
+<span class="linenos">26</span>         <span class="n">ssh_authorized_keys</span><span class="p">:</span>
+<span class="linenos">27</span>         <span class="o">-</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">&gt;</span>
+<span class="linenos">28</span>     <span class="n">write_files</span><span class="p">:</span>
+<span class="linenos">29</span>     <span class="o">-</span> <span class="n">owner</span><span class="p">:</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="p">:</span><span class="n">users</span>
+<span class="linenos">30</span>       <span class="n">path</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/.</span><span class="n">env</span>
+<span class="linenos">31</span>       <span class="n">permissions</span><span class="p">:</span> <span class="s1">&#39;0644&#39;</span>
+<span class="linenos">32</span>       <span class="n">content</span><span class="p">:</span> <span class="o">|</span>
+<span class="linenos">33</span>         <span class="n">WIREGUARD_WEB_BASE_URL</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span>
+<span class="linenos">34</span>         <span class="n">WIREGUARD_STAGING_CONFIG_DIRECTORY</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">staging</span>
+<span class="linenos">35</span>         <span class="n">WIREGUARD_WEB_EMAIL_HOST</span><span class="o">=</span><span class="n">localhost</span>
+<span class="linenos">36</span>         <span class="n">WIREGUARD_WEB_EMAIL_PORT</span><span class="o">=</span><span class="mi">25</span>
+<span class="linenos">37</span>         <span class="n">WIREGUARD_WEB_EMAIL_USER</span><span class="o">=</span>
+<span class="linenos">38</span>         <span class="n">WIREGUARD_WEB_EMAIL_PASSWORD</span><span class="o">=</span>
+<span class="linenos">39</span>         <span class="n">WIREGUARD_WEB_EMAIL_TLS</span><span class="o">=</span><span class="mi">0</span>
+<span class="linenos">40</span>         <span class="n">WIREGUARD_WEB_EMAIL_BACKEND</span><span class="o">=</span><span class="n">django</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">EmailBackend</span>
+<span class="linenos">41</span>         <span class="n">WIREGUARD_WEB_EMAIL_FROM</span><span class="o">=</span><span class="n">root</span><span class="nd">@localhost</span>
+<span class="linenos">42</span>         <span class="n">WIREGUARD_WEB_DEBUG</span><span class="o">=</span><span class="mi">0</span>
+<span class="linenos">43</span>     <span class="n">runcmd</span><span class="p">:</span>
+<span class="linenos">44</span>     <span class="o">-</span> <span class="s2">&quot;wget https://github.com/dunkelstern/wireguard-web/archive/refs/tags/0.4.0.tar.gz -O /home/wireguard-web/wireguard-web-0.4.0.tar.gz&quot;</span>
+<span class="linenos">45</span>     <span class="o">-</span> <span class="s2">&quot;tar -xvz -C /home/wireguard-web -f /home/wireguard-web/wireguard-web-0.4.0.tar.gz&quot;</span>
+<span class="linenos">46</span>     <span class="o">-</span> <span class="s2">&quot;su wireguard-web -c &#39;cd /home/wireguard-web/wireguard-web ; ./setup_wireguard_web.sh&#39;&quot;</span>
+<span class="linenos">47</span>     <span class="o">-</span> <span class="s2">&quot;systemctl enable --now wireguard-web-config.path&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>TODO: Nginx, certbot</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Johannes Schriewer &lt;hallo@dunkelstern.de&gt;.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

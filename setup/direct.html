@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Direct/Bare metal or VM deployment &mdash; WireGuard-Web  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Docker container deployment" href="containers.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            WireGuard-Web
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="install.html">Installation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Direct/Bare metal or VM deployment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-environment">Python environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#application-setup">Application setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#environment-config">Environment config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#migrate-database">Migrate Database</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sudo-configuration">Sudo configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#systemd-configuration">Systemd configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wireguard-web-config-path"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wireguard-web-config-service"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.service</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wireguard-web-dnsmasq-service"><code class="docutils literal notranslate"><span class="pre">wireguard-web-dnsmasq&#64;.service</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wireguard-web-wg-quick-service"><code class="docutils literal notranslate"><span class="pre">wireguard-web-wg-quick&#64;.service</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wireguard-web-ui-service"><code class="docutils literal notranslate"><span class="pre">wireguard-web-ui.service</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#nginx-configuration">Nginx configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-configuration-with-peer2peer-support">Example configuration with peer2peer support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-configuration-without-peer2peer-support">Example configuration without peer2peer support</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#certbot">Certbot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Docker container deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config/servers.html">VPN Server/Endpoint configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/clients.html">Client configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/users.html">User management</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WireGuard-Web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="install.html">Installation</a></li>
+      <li class="breadcrumb-item active">Direct/Bare metal or VM deployment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/setup/direct.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="direct-bare-metal-or-vm-deployment">
+<span id="index-0"></span><h1>Direct/Bare metal or VM deployment<a class="headerlink" href="#direct-bare-metal-or-vm-deployment" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#requirements" id="id4">Requirements</a></p></li>
+<li><p><a class="reference internal" href="#python-environment" id="id5">Python environment</a></p></li>
+<li><p><a class="reference internal" href="#application-setup" id="id6">Application setup</a></p>
+<ul>
+<li><p><a class="reference internal" href="#environment-config" id="id7">Environment config</a></p></li>
+<li><p><a class="reference internal" href="#migrate-database" id="id8">Migrate Database</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#sudo-configuration" id="id9">Sudo configuration</a></p></li>
+<li><p><a class="reference internal" href="#systemd-configuration" id="id10">Systemd configuration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#wireguard-web-config-path" id="id11"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.path</span></code></a></p></li>
+<li><p><a class="reference internal" href="#wireguard-web-config-service" id="id12"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.service</span></code></a></p></li>
+<li><p><a class="reference internal" href="#wireguard-web-dnsmasq-service" id="id13"><code class="docutils literal notranslate"><span class="pre">wireguard-web-dnsmasq&#64;.service</span></code></a></p></li>
+<li><p><a class="reference internal" href="#wireguard-web-wg-quick-service" id="id14"><code class="docutils literal notranslate"><span class="pre">wireguard-web-wg-quick&#64;.service</span></code></a></p></li>
+<li><p><a class="reference internal" href="#wireguard-web-ui-service" id="id15"><code class="docutils literal notranslate"><span class="pre">wireguard-web-ui.service</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#nginx-configuration" id="id16">Nginx configuration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-configuration-with-peer2peer-support" id="id17">Example configuration with peer2peer support</a></p></li>
+<li><p><a class="reference internal" href="#example-configuration-without-peer2peer-support" id="id18">Example configuration without peer2peer support</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#certbot" id="id19">Certbot</a></p></li>
+</ul>
+</nav>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Direct installation on a VM or bare metal is the preferred option as you have
+the best possible customizability. NAT and firewalling is possible with the
+default system tooling and you won’t have to fiddle with Docker or K8s
+specialized configuration.</p>
+</section>
+<section id="requirements">
+<span id="index-1"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink">Requirements</a><a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p>This project is designed to be run in a Linux environment, if you want to run
+the server on a Mac or on Windows you will probably have to replace the systemd
+configuration and some scripts with something that will support that
+environment. It could be possible but was not tested by the developers.</p>
+<p>For this service to work you’ll need some packages from your linux distribution
+installed as well as some other requirements:</p>
+<ol class="arabic simple">
+<li><p>Wireguard compiled into Linux kernel (should be the case for any modern distro)</p></li>
+<li><p>Installed wireguard tools (we need the <code class="docutils literal notranslate"><span class="pre">wg-quick</span></code> and <code class="docutils literal notranslate"><span class="pre">wg</span></code> tools here)</p></li>
+<li><p>Systemd (sorry non-systemd users, I don’t want to debug any other solutions)</p></li>
+<li><p>Python &gt;= 3.9 with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> support (extra packages on Ubuntu!)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> if you want to use the routed DNS functionality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nginx</span></code> as a reverse proxy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">certbot</span></code> for Letsencrypt certificates.</p></li>
+</ol>
+</section>
+<section id="python-environment">
+<span id="index-2"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink">Python environment</a><a class="headerlink" href="#python-environment" title="Link to this heading"></a></h2>
+<p>To be independent from system-packaging quirks and have the correct versions of
+all Python dependencies installed we’re using a Python virtualenv for this
+service.</p>
+<ol class="arabic simple">
+<li><p>Unpack the release zip/tar.gz and switch to unpacked directory</p></li>
+<li><p>Create python venv: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">~/.virtualenvs/wireguard_web</span></code></p></li>
+<li><p>Activate venv: <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.virtualenvs/wireguard_web</span></code></p></li>
+<li><p>Install dependency manager: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">poetry</span></code></p></li>
+<li><p>Install dependencies: <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code></p></li>
+</ol>
+<p>Ideally you’ll create a new user for this service to run and add the activation
+of the virtualenv to the shell profile, for example:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Example .bash_profile</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> #
+ # ~/.bash_profile
+ #
+
+ [[ -f ~/.bashrc ]] &amp;&amp; . ~/.bashrc
+
+ source $HOME/.virtualenvs/bin/activate
+</pre></div>
+</div>
+</div>
+</section>
+<section id="application-setup">
+<span id="index-3"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink">Application setup</a><a class="headerlink" href="#application-setup" title="Link to this heading"></a></h2>
+<p>Before you can run the service we need some configuration to be done.</p>
+<section id="environment-config">
+<span id="index-4"></span><h3><a class="toc-backref" href="#id7" role="doc-backlink">Environment config</a><a class="headerlink" href="#environment-config" title="Link to this heading"></a></h3>
+<p>To configure the application the only file you have to touch is the <code class="docutils literal notranslate"><span class="pre">.env</span></code>
+file in the source directory. To get a template for this
+run <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">.env.sample</span> <span class="pre">.env</span></code>.</p>
+<p>Description of configuration options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">WIREGUARD_WEB_BASE_URL</span></code>: Base URL on which the service will be run. Usually
+you’ll run the service behind a reverse proxy like <code class="docutils literal notranslate"><span class="pre">nginx</span></code> to terminate
+TLS. Make sure to use the externally visible URL for this.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WIREGUARD_STAGING_CONFIG_DIRECTORY</span></code> where to store new configuration files
+for the systemd services to pick them up and deploy them. See below for a
+description of the mechanism used to deploy the configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WIREGUARD_WEB_EMAIL_*</span></code> settings to be used by the email module to send mail</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WIREGUARD_WEB_EMAIL_BACKEND</span></code> this one defines which Django mail backend to
+use. Use one of the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">django.core.mail.backends.console.EmailBackend</span></code>: just log to console, do
+not send any mail.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">django.core.mail.backends.dummy.EmailBackend</span></code>: do not send mails</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">django.core.mail.backends.smtp.EmailBackend</span></code>: Use SMTP to send mail</p></li>
+</ul>
+<p>It is possible to add other e-mail backends (for example Amazon SES), please
+consult the Django documentation for more information on that.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WIREGUARD_WEB_DEBUG</span></code> set this to 1 if you need to debug the Django
+application. It is not recommended to run the service on production with this
+set to 1 as it may leak information in generated backtraces.</p></li>
+</ul>
+</section>
+<section id="migrate-database">
+<span id="index-5"></span><h3><a class="toc-backref" href="#id8" role="doc-backlink">Migrate Database</a><a class="headerlink" href="#migrate-database" title="Link to this heading"></a></h3>
+<p>Create the database and a first user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">create_groups</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sudo-configuration">
+<span id="index-6"></span><h2><a class="toc-backref" href="#id9" role="doc-backlink">Sudo configuration</a><a class="headerlink" href="#sudo-configuration" title="Link to this heading"></a></h2>
+<p>To allow the web-interface to display wireguard connection information you’ll
+need to allow some commands to be run via sudo without a password:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">/etc/sudoers.d/wireguard-web</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">web</span> <span class="n">ALL</span><span class="o">=</span><span class="p">(</span><span class="n">ALL</span><span class="p">)</span> <span class="n">NOPASSWD</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">wg</span> <span class="n">show</span> <span class="nb">all</span> <span class="n">endpoints</span>
+<span class="linenos">2</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">web</span> <span class="n">ALL</span><span class="o">=</span><span class="p">(</span><span class="n">ALL</span><span class="p">)</span> <span class="n">NOPASSWD</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">wg</span> <span class="n">show</span> <span class="nb">all</span> <span class="n">latest</span><span class="o">-</span><span class="n">handshakes</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="systemd-configuration">
+<span id="index-7"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">Systemd configuration</a><a class="headerlink" href="#systemd-configuration" title="Link to this heading"></a></h2>
+<p>To run the service there are some systemd-unit-files in the <code class="docutils literal notranslate"><span class="pre">systemd</span></code>
+sub-directory of the source-tree. Be aware that you cannot use them as they are
+because they contain some placeholders to be replaced by the install-script.</p>
+<p>The following placeholders will be replaced:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{path}</span></code> with the path of the source code checkout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{dnsmasq}</span></code> path to <code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> binary</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{wg}</span></code> path to <code class="docutils literal notranslate"><span class="pre">wg</span></code> binary</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{wgquick}</span></code> path to <code class="docutils literal notranslate"><span class="pre">wq-quick</span></code> binary</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{config}</span></code> path to <code class="docutils literal notranslate"><span class="pre">interfaces.conf</span></code> in configured config staging
+directory</p></li>
+</ul>
+<p>Let’s go through each file and describe what it does:</p>
+<section id="wireguard-web-config-path">
+<span id="index-8"></span><h3><a class="toc-backref" href="#id11" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.path</span></code></a><a class="headerlink" href="#wireguard-web-config-path" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="linenos">2</span><span class="n">Description</span><span class="o">=</span><span class="s2">&quot;Monitor the wireguard-web configuration for changes and update system config&quot;</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
+<span class="linenos">5</span><span class="n">PathChanged</span><span class="o">=</span><span class="p">{</span><span class="n">config</span><span class="p">}</span>
+<span class="linenos">6</span><span class="n">Unit</span><span class="o">=</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">config</span><span class="o">.</span><span class="n">service</span>
+<span class="linenos">7</span>
+<span class="linenos">8</span><span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="linenos">9</span><span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<p>This is a path trigger to run the <code class="docutils literal notranslate"><span class="pre">wireguard-web-config.service</span></code> when the
+<code class="docutils literal notranslate"><span class="pre">interfaces.conf</span></code> in the staging directory changes.</p>
+</section>
+<section id="wireguard-web-config-service">
+<span id="index-9"></span><h3><a class="toc-backref" href="#id12" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">wireguard-web-config.service</span></code></a><a class="headerlink" href="#wireguard-web-config-service" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span> 
+<span class="linenos"> 2</span><span class="n">Description</span><span class="o">=</span><span class="s2">&quot;Update Wireguard config when wireguard-web modifies config files&quot;</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="linenos"> 5</span><span class="n">Type</span><span class="o">=</span><span class="n">oneshot</span>
+<span class="linenos"> 6</span><span class="n">RemainAfterExit</span><span class="o">=</span><span class="n">no</span>
+<span class="linenos"> 7</span><span class="n">Environment</span><span class="o">=</span><span class="n">WIREGUARD_STAGING_CONFIG_DIRECTORY</span><span class="o">=</span><span class="p">{</span><span class="n">config</span><span class="p">}</span>
+<span class="linenos"> 8</span><span class="n">ExecStart</span><span class="o">=</span><span class="p">{</span><span class="n">path</span><span class="p">}</span><span class="o">/</span><span class="n">update_config</span><span class="o">.</span><span class="n">sh</span>
+<span class="linenos"> 9</span><span class="n">WorkingDirectory</span><span class="o">=</span><span class="p">{</span><span class="n">path</span><span class="p">}</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="linenos">12</span><span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<p>This service copies the configuration from the staging-directory to the
+corresponding <code class="docutils literal notranslate"><span class="pre">/etc/wireguard-web</span></code> directory which is only writeable by
+the <code class="docutils literal notranslate"><span class="pre">root</span></code> user.</p>
+</section>
+<section id="wireguard-web-dnsmasq-service">
+<span id="index-10"></span><h3><a class="toc-backref" href="#id13" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">wireguard-web-dnsmasq&#64;.service</span></code></a><a class="headerlink" href="#wireguard-web-dnsmasq-service" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>[Unit]
+<span class="linenos"> 2</span>Description=Lightweight caching DNS server for wireguard-web interface %I
+<span class="linenos"> 3</span>Documentation=man:dnsmasq(8)
+<span class="linenos"> 4</span>Requires=wireguard-web-wg-quick@%i.service
+<span class="linenos"> 5</span>After=network.target
+<span class="linenos"> 6</span>After=wireguard-web-wg-quick@%i.service
+<span class="linenos"> 7</span>Before=network-online.target nss-lookup.target
+<span class="linenos"> 8</span>Wants=nss-lookup.target
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>[Service]
+<span class="linenos">11</span>Type=exec
+<span class="linenos">12</span>ExecStartPre={dnsmasq} -C /etc/wireguard-web/dnsmasq-%i.conf --test
+<span class="linenos">13</span>ExecStart={dnsmasq} -C /etc/wireguard-web/dnsmasq-%i.conf -k --user=dnsmasq --pid-file=/var/run/dnsmasq-%i.pid
+<span class="linenos">14</span>ExecReload=/bin/kill -HUP $MAINPID
+<span class="linenos">15</span>Restart=on-failure
+<span class="linenos">16</span>PrivateDevices=true
+<span class="linenos">17</span>ProtectSystem=full
+<span class="linenos">18</span>
+<span class="linenos">19</span>[Install]
+<span class="linenos">20</span>WantedBy=multi-user.target
+</pre></div>
+</div>
+<p>This runs the DNS service when enabled for a server. This is a parametrized
+service file which can be enabled multiple times for multiple WireGuard
+interfaces (example: <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">--enable</span> <span class="pre">wireguard-web-dnsmas&#64;wg0</span></code> for the
+<code class="docutils literal notranslate"><span class="pre">wg0</span></code> interface)</p>
+</section>
+<section id="wireguard-web-wg-quick-service">
+<span id="index-11"></span><h3><a class="toc-backref" href="#id14" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">wireguard-web-wg-quick&#64;.service</span></code></a><a class="headerlink" href="#wireguard-web-wg-quick-service" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="linenos"> 2</span><span class="n">Description</span><span class="o">=</span><span class="n">WireGuard</span> <span class="n">via</span> <span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">configured</span> <span class="n">by</span> <span class="n">wireguard</span><span class="o">-</span><span class="n">web</span> <span class="k">for</span> <span class="o">%</span><span class="n">I</span>
+<span class="linenos"> 3</span><span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">-</span><span class="n">online</span><span class="o">.</span><span class="n">target</span> <span class="n">nss</span><span class="o">-</span><span class="n">lookup</span><span class="o">.</span><span class="n">target</span>
+<span class="linenos"> 4</span><span class="n">Wants</span><span class="o">=</span><span class="n">network</span><span class="o">-</span><span class="n">online</span><span class="o">.</span><span class="n">target</span> <span class="n">nss</span><span class="o">-</span><span class="n">lookup</span><span class="o">.</span><span class="n">target</span>
+<span class="linenos"> 5</span><span class="n">PartOf</span><span class="o">=</span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="o">.</span><span class="n">target</span>
+<span class="linenos"> 6</span><span class="n">Documentation</span><span class="o">=</span><span class="n">man</span><span class="p">:</span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="n">Documentation</span><span class="o">=</span><span class="n">man</span><span class="p">:</span><span class="n">wg</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">wireguard</span><span class="o">.</span><span class="n">com</span><span class="o">/</span>
+<span class="linenos"> 9</span><span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">wireguard</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">quickstart</span><span class="o">/</span>
+<span class="linenos">10</span><span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="o">.</span><span class="n">zx2c4</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">about</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">man</span><span class="o">/</span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="mf">.8</span>
+<span class="linenos">11</span><span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="o">.</span><span class="n">zx2c4</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">about</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">man</span><span class="o">/</span><span class="n">wg</span><span class="mf">.8</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="linenos">14</span><span class="n">Type</span><span class="o">=</span><span class="n">oneshot</span>
+<span class="linenos">15</span><span class="n">RemainAfterExit</span><span class="o">=</span><span class="n">yes</span>
+<span class="linenos">16</span><span class="n">ExecStart</span><span class="o">=</span><span class="p">{</span><span class="n">wgquick</span><span class="p">}</span> <span class="n">up</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/%</span><span class="n">i</span><span class="o">.</span><span class="n">conf</span>
+<span class="linenos">17</span><span class="n">ExecStop</span><span class="o">=</span><span class="p">{</span><span class="n">wgquick</span><span class="p">}</span> <span class="n">down</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/%</span><span class="n">i</span><span class="o">.</span><span class="n">conf</span>
+<span class="linenos">18</span><span class="n">ExecReload</span><span class="o">=/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;exec </span><span class="si">{wg}</span><span class="s1"> syncconf </span><span class="si">%i</span><span class="s1"> &lt;(exec </span><span class="si">{wgquick}</span><span class="s1"> strip /etc/wireguard-web/</span><span class="si">%i</span><span class="s1">.conf)&#39;</span>
+<span class="linenos">19</span><span class="n">Environment</span><span class="o">=</span><span class="n">WG_ENDPOINT_RESOLUTION_RETRIES</span><span class="o">=</span><span class="n">infinity</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="linenos">22</span><span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<p>This runs a new <code class="docutils literal notranslate"><span class="pre">wg-quick</span></code> based WireGuard tunnel. The service is parametrized
+with an interface name and loads it’s config file from
+<code class="docutils literal notranslate"><span class="pre">/etc/wireguard-web/&lt;interface&gt;.conf</span></code>. It may be enabled multiple times for
+multiple interfaces to support more than one VPN endpoint.</p>
+</section>
+<section id="wireguard-web-ui-service">
+<span id="index-12"></span><h3><a class="toc-backref" href="#id15" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">wireguard-web-ui.service</span></code></a><a class="headerlink" href="#wireguard-web-ui-service" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="linenos"> 2</span><span class="n">Description</span><span class="o">=</span><span class="n">Django</span> <span class="n">service</span> <span class="n">to</span> <span class="n">configure</span> <span class="n">the</span> <span class="n">wireguard</span> <span class="n">VPN</span>
+<span class="linenos"> 3</span><span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="linenos"> 6</span><span class="n">Type</span><span class="o">=</span><span class="n">exec</span>
+<span class="linenos"> 7</span><span class="n">EnvironmentFile</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/.</span><span class="n">env</span>
+<span class="linenos"> 8</span><span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span>
+<span class="linenos"> 9</span><span class="n">ExecStartPre</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/.</span><span class="n">virtualenvs</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+<span class="linenos">10</span><span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/.</span><span class="n">virtualenvs</span><span class="o">/</span><span class="n">wireguard</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gunicorn</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8000</span> <span class="o">--</span><span class="n">workers</span> <span class="mi">2</span> <span class="n">wireguard_web</span><span class="o">.</span><span class="n">wsgi</span><span class="p">:</span><span class="n">application</span>
+<span class="linenos">11</span><span class="n">Restart</span><span class="o">=</span><span class="n">on</span><span class="o">-</span><span class="n">failure</span>
+<span class="linenos">12</span><span class="n">User</span><span class="o">=</span><span class="n">user</span>
+<span class="linenos">13</span><span class="n">Group</span><span class="o">=</span><span class="n">user</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="linenos">16</span><span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<p>This runs the Django web-interface that manages the configuration used by the
+services above. You’ll have to modify it before installing it to match your
+system.</p>
+<p>This one runs on <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code> so it requires the additional <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code>
+dependency to be installed into your virtualenv.</p>
+<p>You can install this by activating your virtualenv:
+<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">$HOME/.virtualenvs/wireguard-web</span></code> and installing the package with:
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gunicorn</span></code>.</p>
+<p>Then change the following things in the <code class="docutils literal notranslate"><span class="pre">.service</span></code>-file:</p>
+<ol class="arabic simple">
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">EnvironmentFile</span></code> to point to your <code class="docutils literal notranslate"><span class="pre">.env</span></code> configuration.</p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">WorkingDirectory</span></code> to point to your source-code checkout.</p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">ExecStartPre</span></code> and <code class="docutils literal notranslate"><span class="pre">ExecStart</span></code> to point to your virtualenv.</p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">User</span></code> and <code class="docutils literal notranslate"><span class="pre">Group</span></code> to match your choosen username and group-name
+for the service. <strong>Do not use root here</strong>.</p></li>
+<li><p>Copy the changed service file to your systemd configuration:
+<code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">wireguard-web-ui.service</span> <span class="pre">/etc/systemd/system</span></code></p></li>
+<li><p>Reload the systemd config: <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">daemon-reload</span></code></p></li>
+<li><p>Enable and run the service: <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">enable</span> <span class="pre">--now</span> <span class="pre">wireguard-web-ui</span></code></p></li>
+</ol>
+</section>
+</section>
+<section id="nginx-configuration">
+<span id="index-13"></span><h2><a class="toc-backref" href="#id16" role="doc-backlink">Nginx configuration</a><a class="headerlink" href="#nginx-configuration" title="Link to this heading"></a></h2>
+<p>If you want to use <code class="docutils literal notranslate"><span class="pre">nginx</span></code> as a reverse proxy to enable SSL/TLS make sure to
+allow for plain HTTP access without a redirect too if you want to use zero
+configuration peer2peer communication between VPN clients. If you don’t need
+that feature, feel free to redirect all HTTP traffic to HTTPS.</p>
+<section id="example-configuration-with-peer2peer-support">
+<span id="index-14"></span><h3><a class="toc-backref" href="#id17" role="doc-backlink">Example configuration with peer2peer support</a><a class="headerlink" href="#example-configuration-with-peer2peer-support" title="Link to this heading"></a></h3>
+<p>If you want to use peer2peer support you’ll have to allow plain HTTP to go
+through to the application as the peering clients will contact the service on
+it’s IP address and usually the issued SSL/TLS certificates do not include the
+IP in their common name, so nginx has trouble to do propper SNI to route the
+requests and the clients get a certificate that is technically not valid.</p>
+<p>The Django application automatically sets <code class="docutils literal notranslate"><span class="pre">HSTS</span></code> headers when the base URL is
+configured as a HTTPS URL, so redirecting your browser based ui to a secure
+channel without explicitly redirecting all requests. The API endpoints that
+will be called by the peering client will not set <code class="docutils literal notranslate"><span class="pre">HSTS</span></code> headers and the API
+client will ignore them anyways.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> server {
+<span class="linenos"> 2</span>     listen [::]:443 ssl default_server
+<span class="linenos"> 3</span>     listen 443 ssl default_server
+<span class="linenos"> 4</span>     listen 80 default_server;
+<span class="linenos"> 5</span>     listen [::]:80 default_server;
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>     root /var/www/html;
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>     index index.html index.htm index.nginx-debian.html;
+<span class="linenos">10</span>
+<span class="linenos">11</span>     server_name my.vpn.dev;
+<span class="linenos">12</span>
+<span class="linenos">13</span>     location / {
+<span class="linenos">14</span>         proxy_set_header Host $host;
+<span class="linenos">15</span>         proxy_set_header X-Real-IP $remote_addr;
+<span class="linenos">16</span>         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+<span class="linenos">17</span>         proxy_set_header X-Forwarded-Proto $scheme;
+<span class="linenos">18</span>         proxy_set_header Proxy &quot;&quot;;
+<span class="linenos">19</span>         proxy_pass_header Server;
+<span class="linenos">20</span>
+<span class="linenos">21</span>         proxy_pass http://127.0.0.1:8000;
+<span class="linenos">22</span>         tcp_nodelay on;
+<span class="linenos">23</span>     }
+<span class="linenos">24</span>
+<span class="linenos">25</span>     ssl_certificate /etc/letsencrypt/live/my.vpn.dev/fullchain.pem; # managed by Certbot
+<span class="linenos">26</span>     ssl_certificate_key /etc/letsencrypt/live/my.vpn.dev/privkey.pem; # managed by Certbot
+<span class="linenos">27</span>     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+<span class="linenos">28</span>     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+<span class="linenos">29</span> }
+</pre></div>
+</div>
+<p>This is a server-snippet that may be used as an item in
+<code class="docutils literal notranslate"><span class="pre">/etc/nginx/sites-available</span></code> and linked to <code class="docutils literal notranslate"><span class="pre">/etc/nginx/sites-enabled</span></code> on
+Debian or Ubuntu. Alternatively you may replace the <code class="docutils literal notranslate"><span class="pre">server</span></code> section of your
+<code class="docutils literal notranslate"><span class="pre">/etc/nginx/nginx.conf</span></code> file.</p>
+<p>You’ll have to replace the <code class="docutils literal notranslate"><span class="pre">server_name</span></code> and the certificate paths with the
+domain name of your server (here we used <code class="docutils literal notranslate"><span class="pre">my.vpn.dev</span></code>).</p>
+<p>As you can see the certificates are managed by <code class="docutils literal notranslate"><span class="pre">certbot</span></code>. For instructions to
+enable <code class="docutils literal notranslate"><span class="pre">certbot</span></code> see below.</p>
+</section>
+<section id="example-configuration-without-peer2peer-support">
+<span id="index-15"></span><h3><a class="toc-backref" href="#id18" role="doc-backlink">Example configuration without peer2peer support</a><a class="headerlink" href="#example-configuration-without-peer2peer-support" title="Link to this heading"></a></h3>
+<p>If you don’t need direct peer2peer support for your VPN clients you may redirect
+all traffic to https in nginx configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> server {
+<span class="linenos"> 2</span>     if ($host = my.vpn.dev) {
+<span class="linenos"> 3</span>         return 301 https://$host$request_uri;
+<span class="linenos"> 4</span>     } # managed by Certbot
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>     server_name my.vpn.dev;
+<span class="linenos"> 7</span>     listen 80;
+<span class="linenos"> 8</span>     return 404; # managed by Certbot
+<span class="linenos"> 9</span> }
+<span class="linenos">10</span>
+<span class="linenos">11</span> server {
+<span class="linenos">12</span>     listen [::]:443 ssl default_server
+<span class="linenos">13</span>     listen 443 ssl default_server
+<span class="linenos">14</span>
+<span class="linenos">15</span>     root /var/www/html;
+<span class="linenos">16</span>
+<span class="linenos">17</span>     index index.html index.htm index.nginx-debian.html;
+<span class="linenos">18</span>
+<span class="linenos">19</span>     server_name my.vpn.dev;
+<span class="linenos">20</span>
+<span class="linenos">21</span>     location / {
+<span class="linenos">22</span>         proxy_set_header Host $host;
+<span class="linenos">23</span>         proxy_set_header X-Real-IP $remote_addr;
+<span class="linenos">24</span>         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+<span class="linenos">25</span>         proxy_set_header X-Forwarded-Proto $scheme;
+<span class="linenos">26</span>         proxy_set_header Proxy &quot;&quot;;
+<span class="linenos">27</span>         proxy_pass_header Server;
+<span class="linenos">28</span>
+<span class="linenos">29</span>         proxy_pass http://127.0.0.1:8000;
+<span class="linenos">30</span>         tcp_nodelay on;
+<span class="linenos">31</span>     }
+<span class="linenos">32</span>
+<span class="linenos">33</span>     ssl_certificate /etc/letsencrypt/live/my.vpn.dev/fullchain.pem; # managed by Certbot
+<span class="linenos">34</span>     ssl_certificate_key /etc/letsencrypt/live/my.vpn.dev/privkey.pem; # managed by Certbot
+<span class="linenos">35</span>     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+<span class="linenos">36</span>     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+<span class="linenos">37</span> }
+</pre></div>
+</div>
+<p>This is a server-snippet that may be used as an item in
+<code class="docutils literal notranslate"><span class="pre">/etc/nginx/sites-available</span></code> and linked to <code class="docutils literal notranslate"><span class="pre">/etc/nginx/sites-enabled</span></code> on
+Debian or Ubuntu. Alternatively you may replace the <code class="docutils literal notranslate"><span class="pre">server</span></code> section of your
+<code class="docutils literal notranslate"><span class="pre">/etc/nginx/nginx.conf</span></code> file.</p>
+<p>You’ll have to replace the <code class="docutils literal notranslate"><span class="pre">server_name</span></code> and the certificate paths with the
+domain name of your server (here we used <code class="docutils literal notranslate"><span class="pre">my.vpn.dev</span></code>).</p>
+<p>As you can see the certificates are managed by <code class="docutils literal notranslate"><span class="pre">certbot</span></code>. For instructions to
+enable <code class="docutils literal notranslate"><span class="pre">certbot</span></code> see below.</p>
+</section>
+</section>
+<section id="certbot">
+<span id="index-16"></span><h2><a class="toc-backref" href="#id19" role="doc-backlink">Certbot</a><a class="headerlink" href="#certbot" title="Link to this heading"></a></h2>
+<p>To configure <code class="docutils literal notranslate"><span class="pre">certbot</span></code> to manage your HTTPS certificates do the following:</p>
+<ol class="arabic simple">
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">certbot</span></code> and it’s nginx plugin</p></li>
+<li><p>Make sure your DNS entries are working correctly (at least an <code class="docutils literal notranslate"><span class="pre">A</span></code>-Record)</p></li>
+<li><p>Configure your web-server like above</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">certbot</span></code> without any parameters and follow the interactive prompt
+to enable HTTPS support for your domain</p></li>
+<li><p>Install the auto-renewal-service:
+<code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">daemon-reload</span> <span class="pre">&amp;&amp;</span> <span class="pre">systemctl</span> <span class="pre">enable</span> <span class="pre">--now</span> <span class="pre">certbot.timer</span></code></p></li>
+</ol>
+<p>Voila, your system will now automatically maintain it’s certificates.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="containers.html" class="btn btn-neutral float-right" title="Docker container deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Johannes Schriewer &lt;hallo@dunkelstern.de&gt;.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

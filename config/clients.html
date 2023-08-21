@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client configuration &mdash; WireGuard-Web  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="User management" href="users.html" />
+    <link rel="prev" title="Peer2Peer communication" href="p2p.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            WireGuard-Web
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setup/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="servers.html">VPN Server/Endpoint configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Client configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="p2p.html">Peer2Peer communication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced">Advanced</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-vpn-dns-services">Using VPN DNS services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#keepalive-timeouts">Keepalive Timeouts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#routing-all-traffic">Routing all traffic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exitnodes">Exitnodes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ip-addresses">IP Addresses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bridged-networks">Bridged Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-networks">Local Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">User management</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WireGuard-Web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Client configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/config/clients.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="client-configuration">
+<span id="index-0"></span><h1>Client configuration<a class="headerlink" href="#client-configuration" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#basics" id="id2">Basics</a></p></li>
+<li><p><a class="reference internal" href="#advanced" id="id3">Advanced</a></p>
+<ul>
+<li><p><a class="reference internal" href="#using-vpn-dns-services" id="id4">Using VPN DNS services</a></p></li>
+<li><p><a class="reference internal" href="#keepalive-timeouts" id="id5">Keepalive Timeouts</a></p></li>
+<li><p><a class="reference internal" href="#routing-all-traffic" id="id6">Routing all traffic</a></p></li>
+<li><p><a class="reference internal" href="#exitnodes" id="id7">Exitnodes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ip-addresses" id="id8">IP Addresses</a></p></li>
+<li><p><a class="reference internal" href="#bridged-networks" id="id9">Bridged Networks</a></p></li>
+<li><p><a class="reference internal" href="#local-networks" id="id10">Local Networks</a></p></li>
+</ul>
+</nav>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="p2p.html">Peer2Peer communication</a></li>
+</ul>
+</div>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Setting up clients may be done from the Web UI as normal Users would do, or
+alternatively through the Django administration backend.</p>
+<p>Client configuration looks like this on the Web UI, but to describe the settings
+we’re using the Django UI.</p>
+<a class="reference internal image-reference" href="../_images/client_ui_settings.png"><img alt="Screenshot of Web UI for client settings" src="../_images/client_ui_settings.png" style="width: 600px;" /></a>
+</section>
+<section id="basics">
+<span id="index-1"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink">Basics</a><a class="headerlink" href="#basics" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/client_basic.png"><img alt="Screenshot of Django Administration Page for Client basic settings" src="../_images/client_basic.png" style="width: 600px;" /></a>
+<p>Basic settings for a client are rather simple. You basically need a <em>Name</em> which
+will be used for UI and DNS purposes (name will be automatically simplified for
+DNS usage), an owner and a server/endpoint to which to connect the client to.</p>
+</section>
+<section id="advanced">
+<span id="index-2"></span><h2><a class="toc-backref" href="#id3" role="doc-backlink">Advanced</a><a class="headerlink" href="#advanced" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/client_advanced.png"><img alt="Screenshot of Django Administration Page for Client advanced settings" src="../_images/client_advanced.png" style="width: 600px;" /></a>
+<p>The advanced settings are all visible at all times on the Django backend but
+will be visible to the users on the UI only if the server has the corresponding
+feature enabled.</p>
+<section id="using-vpn-dns-services">
+<span id="index-3"></span><h3><a class="toc-backref" href="#id4" role="doc-backlink">Using VPN DNS services</a><a class="headerlink" href="#using-vpn-dns-services" title="Link to this heading"></a></h3>
+<p>Enable <em>Use server DNS</em> to create a configuration file that sets a DNS server.</p>
+<p>It depends on the operating system and the configuration method on when that
+server is actually contacted. In worst case all DNS queries will go through the
+VPNs DNS server which will cascade queries it can not answer to the server’s
+DNS, so make sure the server’s DNS is able to answer DNS queries for the
+Internet.</p>
+</section>
+<section id="keepalive-timeouts">
+<span id="index-4"></span><h3><a class="toc-backref" href="#id5" role="doc-backlink">Keepalive Timeouts</a><a class="headerlink" href="#keepalive-timeouts" title="Link to this heading"></a></h3>
+<p>Set the <em>Keepalive Timeout</em> when you have to be able to connect to this client
+from other clients at all times. If the client is behind a NAT it is possible
+that the router doing the NAT has a connection tracking timeout. If no data is
+sent in that timeout the automatic port forwarding will be closed down and you
+will not be able to connect to the client from anywhere. Usually the lowest
+timeout a router has configured is about 30 seconds, so set this to 25 seconds
+if you have problems reaching the client after it has been idle for some time.</p>
+<p>Be aware that this will keep the client from going into any power saving modes,
+so best use this only for clients that do not run on batteries.</p>
+</section>
+<section id="routing-all-traffic">
+<span id="index-5"></span><h3><a class="toc-backref" href="#id6" role="doc-backlink">Routing all traffic</a><a class="headerlink" href="#routing-all-traffic" title="Link to this heading"></a></h3>
+<p>Enable <em>Route all traffic</em> if you want the client to send all network traffic
+through this VPN endpoint. Be aware that this might break local network
+communication, as well as DNS when no further configuration is done on the
+client and VPN DNS is disabled.</p>
+</section>
+<section id="exitnodes">
+<span id="index-6"></span><h3><a class="toc-backref" href="#id7" role="doc-backlink">Exitnodes</a><a class="headerlink" href="#exitnodes" title="Link to this heading"></a></h3>
+<p>This is basically the same setting as on the server side. On the Web UI this
+setting will only be displayed to Staff or Admin users, as well as the
+<em>Bridged Networks</em>-Setting below.</p>
+<p>If you want to allow clients to access other networks over this client you might
+want to enable <em>Exitnode</em> functionality. This is used by the bridging feature
+of the VPN. This will enable NAT on the client for it to be able to bridge
+incoming traffic through it’s own network.</p>
+<p>If you enable the <em>Exitnode</em> function, you must tell the client to which network
+interface to route packets that cannot be routed locally. It is possible to
+“stack” networks this way, but be aware what you’re doing.</p>
+</section>
+</section>
+<section id="ip-addresses">
+<span id="index-7"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">IP Addresses</a><a class="headerlink" href="#ip-addresses" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/client_ips.png"><img alt="Screenshot of Django Administration Page for Client IP settings" src="../_images/client_ips.png" style="width: 600px;" /></a>
+<p>This only displays the IP addresses the service set for your clients
+automatically, based on the endpoint configuration. If you want to you can
+delete single addresses (for example if the client can not handle IPv6). If
+you remove all addresses here and save the client, the service will re-generate
+the assigned IPs automatically.</p>
+</section>
+<section id="bridged-networks">
+<span id="index-8"></span><h2><a class="toc-backref" href="#id9" role="doc-backlink">Bridged Networks</a><a class="headerlink" href="#bridged-networks" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/client_bridges.png"><img alt="Screenshot of Django Administration Page for Client bridge settings" src="../_images/client_bridges.png" style="width: 600px;" /></a>
+<p>This is only enabled when the server allows client bridges. When it does allow
+bridges this works the same as the server variant. This has to be a network
+address for the other clients, they will get routes to that network.</p>
+<p>Be aware that other clients need to re-download their configuration when
+something is changed here!</p>
+</section>
+<section id="local-networks">
+<span id="index-9"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">Local Networks</a><a class="headerlink" href="#local-networks" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/client_local_net.png"><img alt="Screenshot of Django Administration Page for Client local network information" src="../_images/client_local_net.png" style="width: 600px;" /></a>
+<p>This displays local network information if the client is using the peering
+client for local peer2peer autoconfiguration.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="p2p.html" class="btn btn-neutral float-left" title="Peer2Peer communication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="users.html" class="btn btn-neutral float-right" title="User management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Johannes Schriewer &lt;hallo@dunkelstern.de&gt;.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

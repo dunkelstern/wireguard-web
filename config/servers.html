@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPN Server/Endpoint configuration &mdash; WireGuard-Web  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Peer2Peer communication" href="p2p.html" />
+    <link rel="prev" title="Docker container deployment" href="../setup/containers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            WireGuard-Web
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setup/install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">VPN Server/Endpoint configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="p2p.html">Peer2Peer communication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-settings">Advanced Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dns">DNS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nat-exit-nodes">NAT/Exit nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#allowing-full-vpn">Allowing full VPN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#client-communication">Client communication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#network-bridging">Network bridging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#peer-2-peer-communication">Peer 2 peer communication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enforced-keepalive">Enforced Keepalive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#firewall-marking">Firewall marking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-settings">Network settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dns-overrides">DNS Overrides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-registration">Self registration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clients.html">Client configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">User management</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WireGuard-Web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">VPN Server/Endpoint configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/config/servers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vpn-server-endpoint-configuration">
+<span id="index-0"></span><h1>VPN Server/Endpoint configuration<a class="headerlink" href="#vpn-server-endpoint-configuration" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#basics" id="id2">Basics</a></p></li>
+<li><p><a class="reference internal" href="#advanced-settings" id="id3">Advanced Settings</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dns" id="id4">DNS</a></p></li>
+<li><p><a class="reference internal" href="#nat-exit-nodes" id="id5">NAT/Exit nodes</a></p></li>
+<li><p><a class="reference internal" href="#allowing-full-vpn" id="id6">Allowing full VPN</a></p></li>
+<li><p><a class="reference internal" href="#client-communication" id="id7">Client communication</a></p></li>
+<li><p><a class="reference internal" href="#network-bridging" id="id8">Network bridging</a></p></li>
+<li><p><a class="reference internal" href="#peer-2-peer-communication" id="id9">Peer 2 peer communication</a></p></li>
+<li><p><a class="reference internal" href="#enforced-keepalive" id="id10">Enforced Keepalive</a></p></li>
+<li><p><a class="reference internal" href="#firewall-marking" id="id11">Firewall marking</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#network-settings" id="id12">Network settings</a></p></li>
+<li><p><a class="reference internal" href="#dns-overrides" id="id13">DNS Overrides</a></p></li>
+<li><p><a class="reference internal" href="#self-registration" id="id14">Self registration</a></p></li>
+</ul>
+</nav>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="p2p.html">Peer2Peer communication</a></li>
+</ul>
+</div>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Initial VPN server configuration has to be done by using the Django admin pages
+right now. It is planned to create a UI for creating servers as well as it is
+implemented for clients/devices currently.</p>
+<p>You can access the Django admin site by opening the URL <code class="docutils literal notranslate"><span class="pre">/admin/</span></code> on your
+domain. The superuser you created when setting the service up.</p>
+</section>
+<section id="basics">
+<span id="index-1"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink">Basics</a><a class="headerlink" href="#basics" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/server_basic.png"><img alt="Screenshot of Django Administration Page for Server basic settings" src="../_images/server_basic.png" style="width: 600px;" /></a>
+<p>Currently there are 4 mandatory basic settings that have to be filled to create
+a new VPN endpoint:</p>
+<ul class="simple">
+<li><p><em>Server name</em>: Name of the server that will be used in UI. This name will also
+be used as a DNS name (if DNS is enabled, see below) in a simplified version
+that can be used as a domain name (Django speak: <code class="docutils literal notranslate"><span class="pre">slugified</span></code>)</p></li>
+<li><p><em>Network interface</em>: The name of the network interface to use for the tunnel.
+A default WireGuard value would be something like <code class="docutils literal notranslate"><span class="pre">wg0</span></code> or <code class="docutils literal notranslate"><span class="pre">wt0</span></code> but you
+can name your interface however you want, just make sure that it is unique on
+your system (so no two endpoints share the same name and no other network
+interfaces with that name should exist)</p></li>
+<li><p><em>Hostname</em>: The publicly visible Hostname under which we can reach the Server
+this will be used for client configuration, so make sure you can reach the
+server under this hostname from a client.</p></li>
+<li><p><em>Listening port</em>: The UDP port to listen on for client connections. Make sure
+to use something bigger than 1024. This port has to be open in the firewall
+and should not be behind a NAT (use port forwarding !)</p></li>
+<li><p><em>Enabled</em>: If this is not checked the Tunnel endpoint is not started and
+will be removed from the active configuration on save. Clients will not be
+able to see or connect to this Endpoint.</p></li>
+</ul>
+</section>
+<section id="advanced-settings">
+<span id="index-2"></span><h2><a class="toc-backref" href="#id3" role="doc-backlink">Advanced Settings</a><a class="headerlink" href="#advanced-settings" title="Link to this heading"></a></h2>
+<p>There are some advanced settings here that might interest you. The VPN endpoint
+will run witout turning any of this on but you will be severely limited on what
+you can do with your VPN.</p>
+<a class="reference internal image-reference" href="../_images/server_advanced.png"><img alt="Screenshot of Django Administration Page for Server advanced settings" src="../_images/server_advanced.png" style="width: 600px;" /></a>
+<section id="dns">
+<span id="index-3"></span><h3><a class="toc-backref" href="#id4" role="doc-backlink">DNS</a><a class="headerlink" href="#dns" title="Link to this heading"></a></h3>
+<p>If this is checked the service will run a <code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> service on the Tunnel
+which will be configured to contain entries for all clients that may connect
+to the endpoint as well as the server itself. If DNS queries are directed to
+this service that the service has no information for it the query will cascade
+to the nameservers that are configured on the host.</p>
+<p>You’ll have to set <em>DNS Domain</em> to a domain name under which to register the
+VPN clients. Please use something that has nothing other on it, because it might
+get hidden by clients that register the same name. It is probably a good idea to
+use a subdomain like <code class="docutils literal notranslate"><span class="pre">vpn.</span></code> for all clients to be registered on.</p>
+</section>
+<section id="nat-exit-nodes">
+<span id="index-4"></span><h3><a class="toc-backref" href="#id5" role="doc-backlink">NAT/Exit nodes</a><a class="headerlink" href="#nat-exit-nodes" title="Link to this heading"></a></h3>
+<p>If you want to allow clients to access other networks over this VPN you might
+want to enable <em>Exitnode</em> functionality. This is used by two features of the
+VPN:</p>
+<ol class="arabic simple">
+<li><p>When routing all traffic from a client over the VPN to an endpoint you need
+to have this enabled as it enables NAT functionality.</p></li>
+<li><p>When you allow clients to be routed to networks they are not directly part of
+you’ll probably need it too or you will have to configure routing on the
+server as well as the clients.</p></li>
+</ol>
+<p>If you enable the <em>Exitnode</em> function, you must tell the server to which network
+interface to route packets that cannot be routed locally. It is possible to
+“stack” networks this way, but be aware what you’re doing. Usually this is
+probably the interface on your server that has the default gateway or a
+configured IPv6 nexthop.</p>
+</section>
+<section id="allowing-full-vpn">
+<span id="index-5"></span><h3><a class="toc-backref" href="#id6" role="doc-backlink">Allowing full VPN</a><a class="headerlink" href="#allowing-full-vpn" title="Link to this heading"></a></h3>
+<p>If you enable <em>All traffic</em> then the clients will be shown an option to route
+all traffic through the VPN. This is probably useful for mobile devices like
+phones or tablets that should be secured on open networks. Be aware that
+communication with other devices on the same local network might break for
+clients enabling this setting without further configuration.</p>
+</section>
+<section id="client-communication">
+<span id="index-6"></span><h3><a class="toc-backref" href="#id7" role="doc-backlink">Client communication</a><a class="headerlink" href="#client-communication" title="Link to this heading"></a></h3>
+<p>If you enable <em>Client communication</em> you allow the clients to communicate with
+each other. If this is disabled, clients only get routes for the VPN endpoint
+itself and in case they allow all traffic through the VPN they will not reach
+other clients on the same VPN network but everything else.</p>
+<p>Be aware that this is a configuration setting pushed to the client
+configuration. This will not stop a malicious client to modify their
+configuration to add a route to other clients. If you want absolute security
+against such a client you will have to set up firewall scripts for that by
+yourself currently. This might get fixed in the future but will mean that the
+service has to re-configure ip tables or firewalls and this could be more
+complex than thought.</p>
+</section>
+<section id="network-bridging">
+<span id="index-7"></span><h3><a class="toc-backref" href="#id8" role="doc-backlink">Network bridging</a><a class="headerlink" href="#network-bridging" title="Link to this heading"></a></h3>
+<p>If you enable <em>Client bridges</em> clients may provide routes to their networks for
+other clients to access. This is largely untested currently but should
+theoretically work just fine.</p>
+<p>Be aware that clients have to re-download their configuration once other clients
+enable new bridges as they will need the routing information.</p>
+<p>Only Staff or Admin users may configure their clients to provide bridges.</p>
+</section>
+<section id="peer-2-peer-communication">
+<span id="index-8"></span><h3><a class="toc-backref" href="#id9" role="doc-backlink">Peer 2 peer communication</a><a class="headerlink" href="#peer-2-peer-communication" title="Link to this heading"></a></h3>
+<p>Enable <em>Client P2P</em> if you want to allow the clients to connect directly if they
+are in the same local network instead of bouncing traffic through the server.</p>
+<p>This will need a peering client application on the clients that participate in
+this and will be described in <a class="reference internal" href="p2p.html#p2p"><span class="std std-ref">Peer2Peer communication</span></a></p>
+</section>
+<section id="enforced-keepalive">
+<span id="index-9"></span><h3><a class="toc-backref" href="#id10" role="doc-backlink">Enforced Keepalive</a><a class="headerlink" href="#enforced-keepalive" title="Link to this heading"></a></h3>
+<p>If you set anything but <code class="docutils literal notranslate"><span class="pre">0</span></code> on <em>Keepalive timeout</em> client keepalive timeouts
+will be enforced. Only enable this if you have problems to reach clients from
+the server. Clients will send an empty ping packet after roughly this timeout.</p>
+<p>If you have problems with NAT connection tracking timeouts probably set this to
+25 seconds. It is better to configure this for each client that provides
+services for others to access so they do not time out. If enabled the device in
+question might use more energy as it cannot turn of its modem or fail to go to a
+power saving mode and thus drain their battery faster.</p>
+</section>
+<section id="firewall-marking">
+<span id="index-10"></span><h3><a class="toc-backref" href="#id11" role="doc-backlink">Firewall marking</a><a class="headerlink" href="#firewall-marking" title="Link to this heading"></a></h3>
+<p>If you want to firewall traffic that stems from this tunnel you can have it
+marked to be routed differently than other traffic. If set to <code class="docutils literal notranslate"><span class="pre">0</span></code> no marking
+is happening.</p>
+</section>
+</section>
+<section id="network-settings">
+<span id="index-11"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">Network settings</a><a class="headerlink" href="#network-settings" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/server_networks.png"><img alt="Screenshot of Django Administration Page for Server network settings" src="../_images/server_networks.png" style="width: 600px;" /></a>
+<p>This defines the networks the VPN endpoint provides or routes to. You’ll have
+two distinct sets of networks here:</p>
+<ol class="arabic simple">
+<li><p><em>Client networks</em>: Clients will be assigned a random IP on this network on
+creation, so be sure to provide a big enough subnet for all clients here and
+make sure you set the netmask correctly</p></li>
+<li><p><em>Routed networks</em>: Networks defined here without the <em>Client nework</em>
+checkmark will do two things: The tunnel will be assigned the IP address set
+on the address field and clients will get a route to this network but no IP
+entry.</p></li>
+</ol>
+</section>
+<section id="dns-overrides">
+<span id="index-12"></span><h2><a class="toc-backref" href="#id13" role="doc-backlink">DNS Overrides</a><a class="headerlink" href="#dns-overrides" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/server_dns_overrides.png"><img alt="Screenshot of Django Administration Page for Server DNS settings" src="../_images/server_dns_overrides.png" style="width: 600px;" /></a>
+<p>DNS overrides will be written to the <code class="docutils literal notranslate"><span class="pre">dnsmasq</span></code> configuration when you enable
+the DNS functionality in the <em>Advanced</em> section. They work as you would expect.</p>
+</section>
+<section id="self-registration">
+<span id="index-13"></span><h2><a class="toc-backref" href="#id14" role="doc-backlink">Self registration</a><a class="headerlink" href="#self-registration" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/server_self_registrations.png"><img alt="Screenshot of Django Administration Page for Server self registration settings" src="../_images/server_self_registrations.png" style="width: 600px;" /></a>
+<p>If you set one or multiple domain names here, this will enable users with an
+e-mail address on this domain to self-register for this server on the web UI.</p>
+<p>Do not use something like <code class="docutils literal notranslate"><span class="pre">gmail.com</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook.com</span></code> or any free e-mail
+provider here as everyone can make e-mail addresses on them and will be able to
+register and create clients on your VPN network then.</p>
+<p>If no VPN endpoint has a self-registration entry, there are two additional
+options to get users onto the VPN:</p>
+<ol class="arabic simple">
+<li><p>Invite them with the invite form on the web UI (Only Staff and Admin users
+can do that)</p></li>
+<li><p>Add the users in the Django admin directly, see <a class="reference internal" href="users.html#user"><span class="std std-ref">User management</span></a></p></li>
+</ol>
+<p>Another option would be to create all clients with an admin user and send the
+users their configuration via mail or some other channel.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../setup/containers.html" class="btn btn-neutral float-left" title="Docker container deployment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p2p.html" class="btn btn-neutral float-right" title="Peer2Peer communication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Johannes Schriewer &lt;hallo@dunkelstern.de&gt;.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
