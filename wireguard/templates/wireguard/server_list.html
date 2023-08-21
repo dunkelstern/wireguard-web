@@ -29,7 +29,7 @@
                 <th>DNS</th>
                 <th>Exitnode</th>
                 <th>Communication</th>
-                <th></th>
+                <th class="column-hide"></th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@
                 <td>{% if server.has_dns %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                 <td>{% if server.is_exitnode %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
                 <td>{% if server.clients_may_communicate %}<span class="material-icons">check</span>{% else %}<span class="material-icons">close</span>{% endif %}</td>
-                <td><a href="{% url 'server-detail' server.id %}"><span class="material-icons">description</span></a></td>
+                <td class="column-hide"><a href="{% url 'server-detail' server.id %}"><span class="material-icons">description</span></a></td>
             </tr>
             {% endfor %}
         </tbody>
