@@ -4,6 +4,10 @@
 <head>
      <meta charset="utf-8">
      <title>{% block title %}{% endblock %}</title>
+     <link rel="icon" href="{% static 'favicon.ico' %}" sizes="32x32">
+     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+     <link rel="apple-touch-icon" href="{% static 'touch-icon.png' %}">
+     <link rel="manifest" href="{% static 'manifest.webmanifest' %}">
      <link rel="stylesheet" href="{% static 'css/pure-min.css' %}" media="screen">
      <link rel="stylesheet" href="{% static 'css/grids-responsive-min.css' %}" media="screen">
      <link rel="stylesheet" href="{% static 'css/site.css' %}" media="screen">
